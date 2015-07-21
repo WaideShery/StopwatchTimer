@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1.1)"
+                android:textStyle="bold"
+                android:textColor="@color/hour_minute_text"
+                android:textSize="@dimen/millis_text_adapter"
+                android:id="@+id/tvLapAdapNum" />
+            </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_weight="3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00:"
+                android:textColor="@color/hour_minute_text"
+                android:textSize="@dimen/time_text_adapter"
+                android:id="@+id/tvLapAdapTimeDiffer" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00."
+                android:textColor="@color/second_text"
+                android:textSize="@dimen/time_text_adapter"
+                android:id="@+id/tvLapAdapSecondsDiffer" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="000"
+                android:textColor="@color/second_text"
+                android:textSize="@dimen/millis_text_adapter"
+                android:id="@+id/tvLapAdapMillisDiffer" />
+            </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+            <View
+                android:layout_width="1dp"
+                android:layout_height="@dimen/time_text_adapter"
+                android:background="@color/grey_line"/>
+            </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_weight="3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00:"
+                android:textColor="@color/hour_minute_text"
+                android:textSize="@dimen/time_text_adapter"
+                android:id="@+id/tvLapAdapTimeTotal" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00."
+                android:textColor="@color/second_text"
+                android:textSize="@dimen/time_text_adapter"
+                android:id="@+id/tvLapAdapSecondsTotal" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="000"
+                android:textColor="@color/second_text"
+                android:textSize="@dimen/millis_text_adapter"
+                android:id="@+id/tvLapAdapMillisTotal" />
+            </LinearLayout>
+    </LinearLayout>
+
+
+</LinearLayout>

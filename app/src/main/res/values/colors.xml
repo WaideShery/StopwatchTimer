@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="app_background" type="color">#90aaae</item>
+    <item name="actionbar_background" type="color">#ff0fa9a8</item>
+    <item name="actionbar_border" type="color">#007875</item>
+    <item name="actionbar_text" type="color">#cacaca</item>
+    <item name="dd_list_selectable" type="color">#0ed7d6</item>
+    <item name="text_shadow" type="color">#656565</item>
+    <item name="hour_minute_text" type="color">#2C3031</item>
+    <item name="second_text" type="color">#C73333</item>
+    <item name="grey_line" type="color">#4C5252</item>
+
+    <item name="test_black" type="color">#000</item>
+    <item name="test_white" type="color">#fff</item>
+
+
+
+    <color name="hint_foreground_dark">#808080</color>
+    <color name="hint_foreground_light">#808080</color>
+</resources>
