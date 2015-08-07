@@ -12,4 +12,10 @@
         <item name="android:shadowRadius">1.0</item>
     </style>
 
+    <style name="Dialog" parent="android:style/Theme.Holo.Light.Dialog">
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+
 </resources>

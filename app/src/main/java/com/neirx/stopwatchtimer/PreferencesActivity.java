@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import com.neirx.stopwatchtimer.fragments.SettingsFragment;
+import com.neirx.stopwatchtimer.fragments.SettingsFragmentTest;
 
 
 public class PreferencesActivity extends Activity {
@@ -13,7 +14,6 @@ public class PreferencesActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
 
-        getFragmentManager().beginTransaction()
-                .add(R.id.containerPreference, new SettingsFragment()).commit();
+        getFragmentManager().beginTransaction().add(R.id.containerPreference, new SettingsFragmentTest()).commit();
     }
 }

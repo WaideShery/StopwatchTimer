@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/StopwatchTimer.iml" filepath="$PROJECT_DIR$/StopwatchTimer.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/neirdialogs/neirdialogs.iml" filepath="$PROJECT_DIR$/neirdialogs/neirdialogs.iml" />
     </modules>
   </component>
 </project>

@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/pref_screen_padding">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/pref_text_group_bot_margin"
+            android:layout_marginLeft="@dimen/pref_text_group_left_margin"
+            android:text="@string/pref_screen"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/setting_text_group"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pref_divider_group_height"
+            android:background="@color/setting_divider_group" />
+
+
+        <RelativeLayout
+            android:id="@+id/lay_screenStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/pref_group_padding">
+
+            <CheckBox
+                android:id="@+id/check_screenStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:clickable="false"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/pref_chb_left_right_margin"
+                android:layout_marginRight="@dimen/pref_chb_left_right_margin" />
+
+            <TextView
+                android:id="@+id/label_screenStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/check_screenStatus"
+                android:text="@string/pref_screenStatus"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/setting_text_title" />
+
+            <TextView
+                android:id="@+id/sub_screenStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/label_screenStatus"
+                android:layout_toLeftOf="@id/check_screenStatus"
+                android:text="@string/pref_screenStatus_summ"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/setting_text_summary" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pref_divider_list_height"
+            android:background="@color/setting_divider_pref" />
+
+        <RelativeLayout
+            android:id="@+id/lay_screenOrientation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/pref_group_padding">
+
+            <TextView
+                android:id="@+id/label_screenOrientation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/pref_screenOrientation"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/setting_text_title" />
+
+            <TextView
+                android:id="@+id/sub_screenOrientation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/label_screenOrientation"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/setting_text_summary" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/pref_text_group_bot_margin"
+            android:layout_marginLeft="@dimen/pref_text_group_left_margin"
+            android:text="@string/pref_control"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/setting_text_group"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pref_divider_group_height"
+            android:background="@color/setting_divider_group" />
+
+
+        <RelativeLayout
+            android:id="@+id/lay_dialClickable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/pref_group_padding">
+
+            <CheckBox
+                android:id="@+id/check_dialClickable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:clickable="false"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/pref_chb_left_right_margin"
+                android:layout_marginRight="@dimen/pref_chb_left_right_margin" />
+
+            <TextView
+                android:id="@+id/label_dialClickable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/check_dialClickable"
+                android:text="@string/pref_dialClickable"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/setting_text_title" />
+
+            <TextView
+                android:id="@+id/sub_dialClickable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/label_dialClickable"
+                android:layout_toLeftOf="@id/check_dialClickable"
+                android:text="@string/pref_dialClickable_summ"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/setting_text_summary" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pref_divider_list_height"
+            android:background="@color/setting_divider_pref" />
+
+        <RelativeLayout
+            android:id="@+id/lay_vibrateStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/pref_group_padding">
+
+            <CheckBox
+                android:id="@+id/check_vibrateStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:clickable="false"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/pref_chb_left_right_margin"
+                android:layout_marginRight="@dimen/pref_chb_left_right_margin" />
+
+            <TextView
+                android:id="@+id/label_vibrateStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/check_vibrateStatus"
+                android:text="@string/pref_vibrateStatus"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/setting_text_title" />
+
+            <TextView
+                android:id="@+id/sub_vibrateStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/label_vibrateStatus"
+                android:layout_toLeftOf="@id/check_vibrateStatus"
+                android:text="@string/pref_vibrateStatus_summ"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/setting_text_summary" />
+
+        </RelativeLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/pref_text_group_bot_margin"
+            android:layout_marginLeft="@dimen/pref_text_group_left_margin"
+            android:text="@string/pref_sound"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/setting_text_group"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pref_divider_group_height"
+            android:background="@color/setting_divider_group" />
+
+        <RelativeLayout
+            android:id="@+id/lay_soundStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/pref_group_padding">
+
+            <CheckBox
+                android:id="@+id/check_keySoundStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:clickable="false"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/pref_chb_left_right_margin"
+                android:layout_marginRight="@dimen/pref_chb_left_right_margin" />
+
+            <TextView
+                android:id="@+id/label_keySoundStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/check_keySoundStatus"
+                android:text="@string/pref_soundStatus"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/setting_text_title" />
+
+            <TextView
+                android:id="@+id/sub_keySoundStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/label_keySoundStatus"
+                android:layout_toLeftOf="@id/check_keySoundStatus"
+                android:text="@string/pref_keySoundStatus_summ"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/setting_text_summary" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pref_divider_list_height"
+            android:background="@color/setting_divider_pref" />
+
+        <RelativeLayout
+            android:id="@+id/lay_timerOff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/pref_group_padding">
+
+            <CheckBox
+                android:id="@+id/check_timerLongAlarm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:clickable="false"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/pref_chb_left_right_margin"
+                android:layout_marginRight="@dimen/pref_chb_left_right_margin" />
+
+            <TextView
+                android:id="@+id/label_timerLongAlarm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/check_timerLongAlarm"
+                android:text="@string/pref_timerLongAlarm"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/setting_text_title" />
+
+            <TextView
+                android:id="@+id/sub_timerOff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/label_timerLongAlarm"
+                android:layout_toLeftOf="@id/check_timerLongAlarm"
+                android:text="@string/pref_timerLongAlarm_summ"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/setting_text_summary" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pref_divider_list_height"
+            android:background="@color/setting_divider_pref" />
+
+        <RelativeLayout
+            android:id="@+id/lay_customSoundTimer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/pref_group_padding">
+
+            <CheckBox
+                android:id="@+id/check_customSoundTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:clickable="false"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/pref_chb_left_right_margin"
+                android:layout_marginRight="@dimen/pref_chb_left_right_margin" />
+
+            <TextView
+                android:id="@+id/label_customSoundTimer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/check_customSoundTimer"
+                android:text="@string/pref_customSoundTimer"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/setting_text_title" />
+
+            <TextView
+                android:id="@+id/sub_customSoundTimer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/label_customSoundTimer"
+                android:layout_toLeftOf="@id/check_customSoundTimer"
+                android:text="@string/pref_customSoundTimer_summ"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/setting_text_summary" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pref_divider_list_height"
+            android:background="@color/setting_divider_pref" />
+
+        <RelativeLayout
+            android:id="@+id/lay_selectMelody"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/pref_group_padding">
+
+            <TextView
+                android:id="@+id/label_selectMelody"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/pref_selectMelody"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/setting_text_title" />
+
+            <TextView
+                android:id="@+id/sub_selectMelody"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/label_selectMelody"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/setting_text_summary" />
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+</ScrollView>

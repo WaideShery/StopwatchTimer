@@ -11,8 +11,8 @@ public class AppSettings extends OpenSettings {
     private final String CLASS_NAME = "<AppSettings> ";
     public static AppSettings instance;
 
-    enum BoolPref implements SettingsManagement.BoolPref {
-        isSoundOn
+    public enum BoolPref implements SettingsManagement.BoolPref {
+        soundState, isNotTurnOffScreen, isDialClickable, vibrateState, keySoundState, longTimerAlarmState, isCustomTimerSound;
     }
 
     private AppSettings(Context context) {

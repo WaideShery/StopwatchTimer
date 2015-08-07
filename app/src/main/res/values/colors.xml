@@ -17,4 +17,13 @@
 
     <color name="hint_foreground_dark">#808080</color>
     <color name="hint_foreground_light">#808080</color>
+
+    <item name="setting_text_group" type="color">#ff444849</item>
+    <item name="setting_divider_group" type="color">#ff6d7172</item>
+    <item name="setting_divider_pref" type="color">#ff7a9296</item>
+    <item name="setting_text_summary" type="color">#ff3b3f40</item>
+    <item name="setting_text_title" type="color">#ffcdd4d5</item>
+    <item name="chb_bg_selectable" type="color">#ff7a969a</item>
+
+
 </resources>
