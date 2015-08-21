@@ -22,7 +22,6 @@
                 android:id="@+id/label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/check_screenStatus"
                 android:text="@string/pref_screenStatus"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/setting_text_title" />
@@ -31,8 +30,6 @@
                 android:id="@+id/summary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/label_screenStatus"
-                android:layout_toLeftOf="@id/check_screenStatus"
                 android:text="@string/pref_screenStatus_summ"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/setting_text_summary" />

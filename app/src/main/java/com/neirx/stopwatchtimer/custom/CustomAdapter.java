@@ -15,16 +15,15 @@ import java.util.TreeSet;
 public class CustomAdapter extends BaseAdapter {
 
     private static final int TYPE_ITEM = 0;
-    private static final int TYPE_SEPARATOR = 1;
+    private static final int TYPE_HEADER = 1;
 
-    private ArrayList<String> mData = new ArrayList<String>();
-    private TreeSet<Integer> sectionHeader = new TreeSet<Integer>();
+    private ArrayList<String> mData = new ArrayList<>();
+    private TreeSet<Integer> sectionHeader = new TreeSet<>();
 
     private LayoutInflater mInflater;
 
     public CustomAdapter(Context context) {
-        mInflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     public void addItem(final String item) {
@@ -40,7 +39,7 @@ public class CustomAdapter extends BaseAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        return sectionHeader.contains(position) ? TYPE_SEPARATOR : TYPE_ITEM;
+        return sectionHeader.contains(position) ? TYPE_HEADER : TYPE_ITEM;
     }
 
     @Override
@@ -74,7 +73,7 @@ public class CustomAdapter extends BaseAdapter {
                     convertView = mInflater.inflate(R.layout.snippet_item1, null);
                     holder.textView = (TextView) convertView.findViewById(R.id.text);
                     break;
-                case TYPE_SEPARATOR:
+                case TYPE_HEADER:
                     convertView = mInflater.inflate(R.layout.snippet_item2, null);
                     holder.textView = (TextView) convertView.findViewById(R.id.textSeparator);
                     break;

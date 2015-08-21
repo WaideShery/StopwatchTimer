@@ -17,6 +17,8 @@ import com.neirx.stopwatchtimer.fragments.LapsFragment;
 import com.neirx.stopwatchtimer.fragments.StopwatchFragment;
 import com.neirx.stopwatchtimer.fragments.TimerPagerFragment;
 import com.neirx.stopwatchtimer.fragments.VpStopwatchFragment;
+import com.neirx.stopwatchtimer.settings.AppSettings;
+import com.neirx.stopwatchtimer.settings.SettingPref;
 import com.neirx.stopwatchtimer.settings.SettingsManagement;
 
 
@@ -53,7 +55,7 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         }
 
         settings = AppSettings.getInstance(this);
-        isSoundOn = settings.getBoolPref(AppSettings.BoolPref.soundState);
+        isSoundOn = settings.getBoolPref(SettingPref.Bool.soundState);
 
         fragmentManager = getFragmentManager();
         vpStopwatchFragment = VpStopwatchFragment.newInstance();
@@ -118,11 +120,11 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
                 if (isSoundOn) {
                     item.setIcon(R.drawable.sound_off);
                     isSoundOn = false;
-                    settings.setPref(AppSettings.BoolPref.soundState, false);
+                    settings.setPref(SettingPref.Bool.soundState, false);
                 } else {
                     item.setIcon(R.drawable.sound_on);
                     isSoundOn = true;
-                    settings.setPref(AppSettings.BoolPref.soundState, true);
+                    settings.setPref(SettingPref.Bool.soundState, true);
                 }
                 return true;
         }

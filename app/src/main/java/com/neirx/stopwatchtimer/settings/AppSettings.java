@@ -1,19 +1,12 @@
-package com.neirx.stopwatchtimer;
+package com.neirx.stopwatchtimer.settings;
 
 
 import android.content.Context;
-
-import com.neirx.stopwatchtimer.settings.OpenSettings;
-import com.neirx.stopwatchtimer.settings.SettingsManagement;
 
 
 public class AppSettings extends OpenSettings {
     private final String CLASS_NAME = "<AppSettings> ";
     public static AppSettings instance;
-
-    public enum BoolPref implements SettingsManagement.BoolPref {
-        soundState, isNotTurnOffScreen, isDialClickable, vibrateState, keySoundState, longTimerAlarmState, isCustomTimerSound;
-    }
 
     private AppSettings(Context context) {
         super(context);

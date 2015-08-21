@@ -4,8 +4,6 @@ package com.neirx.stopwatchtimer.fragments;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,13 +12,10 @@ import android.widget.CheckBox;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.neirx.stopwatchtimer.AppSettings;
+import com.neirx.stopwatchtimer.settings.AppSettings;
 import com.neirx.stopwatchtimer.R;
+import com.neirx.stopwatchtimer.settings.SettingPref;
 import com.neirx.stopwatchtimer.settings.SettingsManagement;
-
-import java.sql.Time;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 public class SettingsFragment extends Fragment {
@@ -56,12 +51,12 @@ public class SettingsFragment extends Fragment {
         checkCustomSoundTimer = (CheckBox) rootView.findViewById(R.id.check_customSoundTimer);
 
         //Установка состояний CheckBox-элементов
-        checkScreenStatus.setChecked(settings.getBoolPref(AppSettings.BoolPref.isNotTurnOffScreen));
-        checkDialClickable.setChecked(settings.getBoolPref(AppSettings.BoolPref.isDialClickable));
-        checkVibrateStatus.setChecked(settings.getBoolPref(AppSettings.BoolPref.vibrateState));
-        checkKeySoundStatus.setChecked(settings.getBoolPref(AppSettings.BoolPref.keySoundState));
-        checkTimerLongAlarm.setChecked(settings.getBoolPref(AppSettings.BoolPref.longTimerAlarmState));
-        checkCustomSoundTimer.setChecked(settings.getBoolPref(AppSettings.BoolPref.isCustomTimerSound));
+        checkScreenStatus.setChecked(settings.getBoolPref(SettingPref.Bool.isNotTurnOffScreen));
+        checkDialClickable.setChecked(settings.getBoolPref(SettingPref.Bool.isDialClickable));
+        checkVibrateStatus.setChecked(settings.getBoolPref(SettingPref.Bool.vibrateState));
+        checkKeySoundStatus.setChecked(settings.getBoolPref(SettingPref.Bool.keySoundState));
+        checkTimerLongAlarm.setChecked(settings.getBoolPref(SettingPref.Bool.longTimerAlarmState));
+        checkCustomSoundTimer.setChecked(settings.getBoolPref(SettingPref.Bool.isCustomTimerSound));
 
         //Установка слушателей
         setTouchCheckBox(layScreenStatus, checkScreenStatus, booleanAction);
@@ -151,22 +146,22 @@ public class SettingsFragment extends Fragment {
         public void doAction(View v, boolean value) {
             switch (v.getId()) {
                 case R.id.lay_screenStatus:
-                    settings.setPref(AppSettings.BoolPref.isNotTurnOffScreen, value);
+                    settings.setPref(SettingPref.Bool.isNotTurnOffScreen, value);
                     break;
                 case R.id.lay_dialClickable:
-                    settings.setPref(AppSettings.BoolPref.isDialClickable, value);
+                    settings.setPref(SettingPref.Bool.isDialClickable, value);
                     break;
                 case R.id.lay_vibrateStatus:
-                    settings.setPref(AppSettings.BoolPref.vibrateState, value);
+                    settings.setPref(SettingPref.Bool.vibrateState, value);
                     break;
                 case R.id.lay_soundStatus:
-                    settings.setPref(AppSettings.BoolPref.soundState, value);
+                    settings.setPref(SettingPref.Bool.soundState, value);
                     break;
                 case R.id.lay_timerOff:
-                    settings.setPref(AppSettings.BoolPref.longTimerAlarmState, value);
+                    settings.setPref(SettingPref.Bool.longTimerAlarmState, value);
                     break;
                 case R.id.lay_customSoundTimer:
-                    settings.setPref(AppSettings.BoolPref.isCustomTimerSound, value);
+                    settings.setPref(SettingPref.Bool.isCustomTimerSound, value);
                     break;
             }
         }
@@ -174,10 +169,10 @@ public class SettingsFragment extends Fragment {
 
 
     private interface ClickAction {
-        abstract void doAction(View v);
+        void doAction(View v);
     }
 
     private interface ClickBooleanAction {
-        abstract void doAction(View v, boolean value);
+        void doAction(View v, boolean value);
     }
 }
