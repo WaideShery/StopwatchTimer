@@ -224,7 +224,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@id/check_keySoundStatus"
-                android:text="@string/pref_soundStatus"
+                android:text="@string/pref_keySoundStatus"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/setting_text_title" />
 

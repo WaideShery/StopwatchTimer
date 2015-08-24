@@ -12,7 +12,7 @@
     <string name="pref_control">Управление</string>
     <string name="pref_sound">Звуки</string>
     <string name="pref_screenStatus">Не выключать экран</string>
-    <string name="pref_soundStatus">Звук кнопок</string>
+    <string name="pref_keySoundStatus">Звук кнопок</string>
     <string name="pref_keySoundStatus_summ">Звуковое совпровождение при нажатии на кнопки</string>
     <string name="pref_vibrateStatus">Вибрация</string>
     <string name="pref_vibrateStatus_summ">Вибрация при нажатии на кнопки и окончании таймера</string>
