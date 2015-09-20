@@ -37,6 +37,7 @@ public class ListDialogFragment extends BaseDialogFragment {
         tvTitle = (TextView) view.findViewById(R.id.tvTitle);
         dividerTitle = view.findViewById(R.id.dividerTitle);
         lvChoice = (ListView) view.findViewById(R.id.lvChoice);
+        layButtons = view.findViewById(R.id.layButtons);
 
         checkTitle();
         checkButtons();

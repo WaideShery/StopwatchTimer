@@ -1,6 +1,7 @@
 package com.neirx.stopwatchtimer.custom;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

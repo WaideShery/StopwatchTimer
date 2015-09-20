@@ -11,6 +11,7 @@ import java.util.TreeSet;
 
 /**
  * Created by Waide Shery on 07.08.2015.
+ *
  */
 public class SettingsAdapter extends BaseAdapter {
     private static final int TYPE_ITEM = 0;

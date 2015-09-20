@@ -1,6 +1,10 @@
 package com.neirx.stopwatchtimer.fragments;
 
+import android.app.Activity;
+import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,13 +14,19 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.neirx.neirdialogs.dialog.ListDialogFragment;
+import com.neirx.neirdialogs.dialog.SelectDialogFragment;
+import com.neirx.neirdialogs.interfaces.ChoiceItem;
+import com.neirx.stopwatchtimer.CustomDialogCreator;
 import com.neirx.stopwatchtimer.R;
 import com.neirx.stopwatchtimer.SettingItem;
+import com.neirx.stopwatchtimer.custom.OrientationItem;
 import com.neirx.stopwatchtimer.custom.SettingsAdapter;
 import com.neirx.stopwatchtimer.settings.AppSettings;
 import com.neirx.stopwatchtimer.settings.SettingPref;
 import com.neirx.stopwatchtimer.settings.SettingsManagement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,13 +40,17 @@ public class SettingsFragmentTest extends Fragment {
     boolean isChecked;
     SettingsAdapter mAdapter;
     SettingItem settingItem;
+    CustomDialogCreator dialogCreator;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_test_settings, container, false);
         //Класс управления настройками приложения
-        settings = AppSettings.getInstance(getActivity());
-        mAdapter = new SettingsAdapter(getActivity());
+        Activity activity = getActivity();
+        settings = AppSettings.getInstance(activity);
+        mAdapter = new SettingsAdapter(activity);
+        dialogCreator = CustomDialogCreator.newInstance(activity);
+
 
         //Заголовок "Экран"
         title = getString(R.string.pref_screen);
@@ -57,6 +71,12 @@ public class SettingsFragmentTest extends Fragment {
             summary = getString(R.string.pref_screenOrientation_default);
         }
         settingItem = new SettingItem(title, summary);
+        List<ChoiceItem> choiceItems = new ArrayList<>();
+        String[] orientations = getResources().getStringArray(R.array.pref_screenOrientation_entries);
+        choiceItems.add(new OrientationItem())
+        SelectDialogFragment dialogOrientation = dialogCreator.getSelectDialog(false);
+        dialogOrientation.setItems(getResources().getStringArray(R.array.pref_screenOrientation_entries));
+        settingItem.setDialog(dialogOrientation);
         mAdapter.addItem(settingItem);
 
         //Заголовок "Управлени"
@@ -122,11 +142,15 @@ public class SettingsFragmentTest extends Fragment {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             SettingItem item = (SettingItem) parent.getAdapter().getItem(position);
+            DialogFragment dialog;
             if(item.hasCheckBox()){
                 boolean isChecked = item.isChecked();
                 settings.setPref(item.getKey(), !isChecked);
                 item.setChecked(!isChecked);
                 mAdapter.notifyDataSetChanged();
+            } else if((dialog = item.getDialog()) != null){
+                FragmentManager manager = getFragmentManager();
+                dialog.show(manager, item.getTitle());
             }
         }
     };

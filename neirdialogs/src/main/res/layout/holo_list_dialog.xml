@@ -10,6 +10,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/lvChoice" />
 
-    <include layout="@layout/buttons_part"/>
+    <include layout="@layout/buttons_part" android:id="@+id/layButtons"/>
 
 </LinearLayout>

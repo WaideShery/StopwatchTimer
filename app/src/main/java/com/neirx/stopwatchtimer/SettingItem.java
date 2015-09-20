@@ -1,5 +1,9 @@
 package com.neirx.stopwatchtimer;
 
+import android.app.DialogFragment;
+import android.content.DialogInterface;
+import android.view.View;
+
 import com.neirx.stopwatchtimer.settings.SettingPref;
 import com.neirx.stopwatchtimer.settings.SettingsManagement;
 
@@ -13,6 +17,15 @@ public class SettingItem {
     private boolean hasCheckBox;
     private boolean isChecked;
     private SettingsManagement.BoolPref key;
+    private DialogFragment dialog = null;
+
+    public DialogFragment getDialog() {
+        return dialog;
+    }
+
+    public void setDialog(DialogFragment dialog) {
+        this.dialog = dialog;
+    }
 
     public void setKey(SettingsManagement.BoolPref key) {
         this.key = key;
