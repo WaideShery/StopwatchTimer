@@ -19,7 +19,6 @@ public class SettingsAdapter extends BaseAdapter {
 
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_HEADER = 1;
-
     private ArrayList<SettingItem> mData = new ArrayList<>();
     private TreeSet<Integer> sectionHeader = new TreeSet<>();
 
@@ -38,6 +37,10 @@ public class SettingsAdapter extends BaseAdapter {
         mData.add(item);
         sectionHeader.add(mData.size() - 1);
         notifyDataSetChanged();
+    }
+
+    public ArrayList<SettingItem> getData() {
+        return mData;
     }
 
     @Override

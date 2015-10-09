@@ -1,46 +1,66 @@
 package com.neirx.stopwatchtimer.fragments;
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.CheckBox;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.neirx.neirdialogs.dialog.ListDialogFragment;
-import com.neirx.neirdialogs.dialog.SelectDialogFragment;
-import com.neirx.neirdialogs.interfaces.ChoiceItem;
-import com.neirx.stopwatchtimer.CustomDialogCreator;
+import com.neirx.neirdialogs.interfaces.NeirDialogInterface;
+import com.neirx.neirdialogs.interfaces.RootDialog;
+import com.neirx.neirdialogs.interfaces.SingleChoiceDialog;
+import com.neirx.stopwatchtimer.CustomDialogFactory;
 import com.neirx.stopwatchtimer.R;
 import com.neirx.stopwatchtimer.SettingItem;
-import com.neirx.stopwatchtimer.custom.OrientationItem;
 import com.neirx.stopwatchtimer.custom.SettingsAdapter;
 import com.neirx.stopwatchtimer.settings.AppSettings;
 import com.neirx.stopwatchtimer.settings.SettingPref;
 import com.neirx.stopwatchtimer.settings.SettingsManagement;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by Waide Shery on 07.08.2015.
  *
  */
-public class SettingsFragmentTest extends Fragment {
+public class SettingsFragmentTest extends Fragment implements NeirDialogInterface.OnClickListener {
     SettingsManagement settings;
-    String title;
-    String summary;
     boolean isChecked;
     SettingsAdapter mAdapter;
     SettingItem settingItem;
-    CustomDialogCreator dialogCreator;
+    CustomDialogFactory dialogFactory;
+    SingleChoiceDialog dialogOrientation;
+
+    List<String> orientationList;
+
+    String titleScreen;
+    String titleScreenStatus;
+    String titleScreenOrientation;
+    String titleControl;
+    String titleDialClickable;
+    String titleVibrateStatus;
+    String titleSound;
+    String titleKeySoundStatus;
+    String titleTimerLongAlarm;
+    String titleCustomSoundTimer;
+    String titleSelectMelody;
+
+    String sumScreenStatus;
+    String sumScreenOrientation;
+    String sumDialClickable;
+    String sumVibrateStatus;
+    String sumKeySoundStatus;
+    String sumTimerLongAlarm;
+    String sumCustomSoundTimer;
+
+    String[] screenOrientationArray;
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
@@ -49,87 +69,74 @@ public class SettingsFragmentTest extends Fragment {
         Activity activity = getActivity();
         settings = AppSettings.getInstance(activity);
         mAdapter = new SettingsAdapter(activity);
-        dialogCreator = CustomDialogCreator.newInstance(activity);
+        dialogFactory = CustomDialogFactory.newInstance(activity);
 
+        initValues();
 
         //Заголовок "Экран"
-        title = getString(R.string.pref_screen);
-        mAdapter.addSectionHeaderItem(new SettingItem(title));
+        mAdapter.addSectionHeaderItem(new SettingItem(titleScreen));
 
         //Настройка "Не выключать экран"
-        title = getString(R.string.pref_screenStatus);
-        summary = getString(R.string.pref_screenStatus_summ);
         isChecked = settings.getBoolPref(SettingPref.Bool.isNotTurnOffScreen);
-        settingItem = new SettingItem(title, summary, isChecked);
-        settingItem.setKey(SettingPref.Bool.isNotTurnOffScreen);
-        mAdapter.addItem(settingItem);
+        SettingItem screenStatusItem = new SettingItem(titleScreenStatus, sumScreenStatus, isChecked);
+        screenStatusItem.setKey(SettingPref.Bool.isNotTurnOffScreen);
+        mAdapter.addItem(screenStatusItem);
 
         //Настройка "ориентация экрана"
-        title = getString(R.string.pref_screenOrientation);
-        summary = settings.getStringPref(SettingPref.String.screenOrientation, null);
-        if(summary == null){
-            summary = getString(R.string.pref_screenOrientation_default);
-        }
-        settingItem = new SettingItem(title, summary);
-        List<ChoiceItem> choiceItems = new ArrayList<>();
-        String[] orientations = getResources().getStringArray(R.array.pref_screenOrientation_entries);
-        choiceItems.add(new OrientationItem())
-        SelectDialogFragment dialogOrientation = dialogCreator.getSelectDialog(false);
-        dialogOrientation.setItems(getResources().getStringArray(R.array.pref_screenOrientation_entries));
-        settingItem.setDialog(dialogOrientation);
-        mAdapter.addItem(settingItem);
+        int chOrientation = settings.getIntPref(SettingPref.Int.screenOrientation, 0);
+        orientationList = new ArrayList<>();
+        Collections.addAll(orientationList, screenOrientationArray);
+        sumScreenOrientation = screenOrientationArray[chOrientation];
+        SettingItem screenOrientationItem = new SettingItem(titleScreenOrientation, sumScreenOrientation);
+        dialogOrientation = dialogFactory.createSingleChoiceDialog();
+        dialogOrientation.setTitle(getString(R.string.pref_screenOrientation));
+        dialogOrientation.setItems(orientationList, new int[]{chOrientation});
+        dialogOrientation.setPositiveButton(getString(R.string.ok_btn));
+        dialogOrientation.setNegativeButton(getString(R.string.cancel_btn));
+        dialogOrientation.setOnClickListener(this, getString(R.string.pref_screenOrientation));
+        screenOrientationItem.setDialog(dialogOrientation);
+        mAdapter.addItem(screenOrientationItem);
 
         //Заголовок "Управлени"
-        title = getString(R.string.pref_control);
-        mAdapter.addSectionHeaderItem(new SettingItem(title));
+        mAdapter.addSectionHeaderItem(new SettingItem(titleControl));
 
         //Настройка "Нажатие на циферблат"
-        title = getString(R.string.pref_dialClickable);
-        summary = getString(R.string.pref_dialClickable_summ);
         isChecked = settings.getBoolPref(SettingPref.Bool.isDialClickable);
-        settingItem = new SettingItem(title, summary, isChecked);
+        settingItem = new SettingItem(titleDialClickable, sumDialClickable, isChecked);
         settingItem.setKey(SettingPref.Bool.isDialClickable);
         mAdapter.addItem(settingItem);
 
         //Настройка "Вибрация"
-        title = getString(R.string.pref_vibrateStatus);
-        summary = getString(R.string.pref_vibrateStatus_summ);
         isChecked = settings.getBoolPref(SettingPref.Bool.vibrateState);
-        settingItem = new SettingItem(title, summary, isChecked);
+        settingItem = new SettingItem(titleVibrateStatus, sumVibrateStatus, isChecked);
         settingItem.setKey(SettingPref.Bool.vibrateState);
         mAdapter.addItem(settingItem);
 
         //Заголовок "Звуки"
-        title = getString(R.string.pref_control);
-        mAdapter.addSectionHeaderItem(new SettingItem(title));
+        mAdapter.addSectionHeaderItem(new SettingItem(titleSound));
 
         //Настройка "Звук кнопок"
-        title = getString(R.string.pref_keySoundStatus_summ);
-        summary = getString(R.string.pref_keySoundStatus_summ);
         isChecked = settings.getBoolPref(SettingPref.Bool.keySoundState);
-        settingItem = new SettingItem(title, summary, isChecked);
+        settingItem = new SettingItem(titleKeySoundStatus, sumKeySoundStatus, isChecked);
         settingItem.setKey(SettingPref.Bool.keySoundState);
         mAdapter.addItem(settingItem);
 
         //Настройка "Долгий сигнал таймера"
-        title = getString(R.string.pref_timerLongAlarm);
-        summary = getString(R.string.pref_timerLongAlarm_summ);
         isChecked = settings.getBoolPref(SettingPref.Bool.longTimerAlarmState);
-        settingItem = new SettingItem(title, summary, isChecked);
+        settingItem = new SettingItem(titleTimerLongAlarm, sumTimerLongAlarm, isChecked);
         settingItem.setKey(SettingPref.Bool.longTimerAlarmState);
         mAdapter.addItem(settingItem);
 
+        /*
         //Настройка "Мелодия таймера"
-        title = getString(R.string.pref_customSoundTimer);
-        summary = getString(R.string.pref_customSoundTimer_summ);
         isChecked = settings.getBoolPref(SettingPref.Bool.isCustomTimerSound);
-        settingItem = new SettingItem(title, summary, isChecked);
+        settingItem = new SettingItem(titleCustomSoundTimer, sumCustomSoundTimer, isChecked);
         settingItem.setKey(SettingPref.Bool.isCustomTimerSound);
         mAdapter.addItem(settingItem);
 
         //Настройка "Выбор мелодии"
-        title = getString(R.string.pref_selectMelody);
-        mAdapter.addItem(new SettingItem(title));
+        mAdapter.addItem(new SettingItem(titleSelectMelody));
+        */
 
         ListView listView = (ListView) rootView.findViewById(R.id.listView);
         listView.setAdapter(mAdapter);
@@ -138,11 +145,13 @@ public class SettingsFragmentTest extends Fragment {
         return rootView;
     }
 
+
+
     AdapterView.OnItemClickListener clickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             SettingItem item = (SettingItem) parent.getAdapter().getItem(position);
-            DialogFragment dialog;
+            RootDialog dialog;
             if(item.hasCheckBox()){
                 boolean isChecked = item.isChecked();
                 settings.setPref(item.getKey(), !isChecked);
@@ -155,5 +164,43 @@ public class SettingsFragmentTest extends Fragment {
         }
     };
 
+    @Override
+    public void onClick(String tag, int buttonId, Object extraData) {
+        List<SettingItem> itemList = mAdapter.getData();
+        if (tag.equals(titleScreenOrientation) && buttonId == NeirDialogInterface.BUTTON_POSITIVE) {
+            int checkId = (Integer) extraData;
+            settings.setPref(SettingPref.Int.screenOrientation, checkId);
+            for(SettingItem item : itemList){
+                if(item.getTitle().equals(tag)) {
+                    item.setSummary(screenOrientationArray[checkId]);
+                    dialogOrientation.setItems(orientationList, new int[]{checkId});
+                }
+            }
+            mAdapter.notifyDataSetChanged();
+        }
+    }
 
+
+    private void initValues() {
+        titleScreen = getString(R.string.pref_screen);
+        titleScreenStatus = getString(R.string.pref_screenStatus);
+        titleScreenOrientation = getString(R.string.pref_screenOrientation);
+        titleControl = getString(R.string.pref_control);
+        titleDialClickable = getString(R.string.pref_dialClickable);
+        titleVibrateStatus = getString(R.string.pref_vibrateStatus);
+        titleSound = getString(R.string.pref_sound);
+        titleKeySoundStatus = getString(R.string.pref_keySoundStatus);
+        titleTimerLongAlarm = getString(R.string.pref_timerLongAlarm);
+        titleCustomSoundTimer = getString(R.string.pref_customSoundTimer);
+        titleSelectMelody = getString(R.string.pref_selectMelody);
+
+        sumScreenStatus = getString(R.string.pref_screenStatus_summ);
+        sumDialClickable = getString(R.string.pref_dialClickable_summ);
+        sumVibrateStatus = getString(R.string.pref_vibrateStatus_summ);
+        sumKeySoundStatus = getString(R.string.pref_keySoundStatus_summ);
+        sumTimerLongAlarm = getString(R.string.pref_timerLongAlarm_summ);
+        sumCustomSoundTimer = getString(R.string.pref_customSoundTimer_summ);
+
+        screenOrientationArray = getResources().getStringArray(R.array.pref_screenOrientation_entries);
+    }
 }

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:id="@+id/laySwTime"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/margin_center_button"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:gravity="center">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00"
+            android:textSize="@dimen/hour_minute_second_text"
+            android:textStyle="bold"
+            android:textColor="@color/hour_minute_text"
+            android:id="@+id/tvSwHours"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"
+            android:textSize="@dimen/hour_minute_second_text"
+            android:textStyle="bold"
+            android:textColor="@color/hour_minute_text"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00"
+            android:textSize="@dimen/hour_minute_second_text"
+            android:textStyle="bold"
+            android:textColor="@color/hour_minute_text"
+            android:id="@+id/tvSwMinutes"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"
+            android:textSize="@dimen/hour_minute_second_text"
+            android:textStyle="bold"
+            android:textColor="@color/hour_minute_text"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00"
+            android:textSize="@dimen/hour_minute_second_text"
+            android:textColor="@color/second_text"
+            android:textStyle="bold"
+            android:id="@+id/tvSwSeconds"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="."
+            android:textSize="@dimen/hour_minute_second_text"
+            android:textColor="@color/second_text"
+            android:textStyle="bold"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="000"
+            android:textSize="@dimen/millisecond_text"
+            android:textColor="@color/second_text"
+            android:textStyle="bold"
+            android:id="@+id/tvMillis"/>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/laySwStopwatch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/laySwTime">
+        <ImageView
+            android:src="@drawable/dial_stopwatch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
+        <ImageView
+            android:id="@+id/ivSwSecondHand"
+            android:src="@drawable/second_hand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
+
+    </FrameLayout>
+
+
+</RelativeLayout>

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.Menu;
@@ -27,6 +28,7 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
     private static final String CLASS_NAME = "<MainActivity> ";
     SettingsManagement settings;
     boolean isSoundOn, isVisibleClearMenu;
+    int screenOrientation;
     FragmentManager fragmentManager;
     VpStopwatchFragment vpStopwatchFragment;
     BottomMenuFragment bottomMenuFragment;
@@ -56,6 +58,9 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
 
         settings = AppSettings.getInstance(this);
         isSoundOn = settings.getBoolPref(SettingPref.Bool.soundState);
+        screenOrientation = settings.getIntPref(SettingPref.Int.screenOrientation, 0);
+
+        switchScreenOrientation(screenOrientation);
 
         fragmentManager = getFragmentManager();
         vpStopwatchFragment = VpStopwatchFragment.newInstance();
@@ -74,6 +79,23 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
 
 
 
+    }
+
+    private void switchScreenOrientation(int orientation){
+        switch (orientation){
+            case Statical.SCREEN_ORIENTATION_SYSTEM:
+                setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                break;
+            case Statical.SCREEN_ORIENTATION_PORTRAIT:
+                setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                break;
+            case Statical.SCREEN_ORIENTATION_LANDSCAPE:
+                setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                break;
+            case Statical.SCREEN_ORIENTATION_AUTO:
+                setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+                break;
+        }
     }
 
     public void clickedStopwatch(){

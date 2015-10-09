@@ -1,21 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="holo_title_text">@android:color/holo_green_light</color>.
-    <color name="holo_divider">@android:color/holo_green_light</color>
-    <color name="holo_green_dark">@android:color/holo_green_dark</color>
-    <color name="holo_message_text">@android:color/darker_gray</color>
-    <color name="holo_list_text">@android:color/darker_gray</color>
-    <color name="holo_background">@android:color/holo_blue_light</color>
-    <color name="holo_button_divider">@android:color/darker_gray</color>
-    <color name="dialog_background">#F1F1F1</color>
-    <color name="pressed_button">@android:color/holo_green_light</color>
+    <color name="holo_dialog_background">#F1F1F1</color>
+    <color name="holo_btn_press_blue">#ff27bae5</color>
+    <color name="holo_title_text">#33b5e5</color>.
+    <color name="holo_title_divider">#33b5e5</color>
+    <color name="holo_button_text">#ff000000</color>
+    <color name="holo_button_divider">#aaa</color>
+    <color name="holo_message_text">#ff000000</color>
+    <color name="holo_list_item_text">#ff000000</color>
+    <color name="holo_edit_text">#ff000000</color>
+    <color name="holo_edit_text_hint">#8e8e8e</color>
+    <color name="holo_list_divider">#ffbfbfbf</color>
 
-    <color name="button_border">#aaa</color>
+
+    <!--color name="holo_green_dark">#669900</color>
+    <color name="holo_list_text">@android:color/darker_gray</color>
+    <color name="holo_background">#33B5E5</color>
+    <color name="pressed_button">#99CC00</color>
+
     <color name="list_item_bg">#aaa</color>
     <color name="holo_blue">#33b5e5</color>
     <color name="holo_dark_text">#ff000000</color>
-
-
+    <color name="holo_dark_edit_text">#ff000000</color>
+    <color name="holo_dark_edit_hint">#8e8e8e</color-->
 
 
 </resources>

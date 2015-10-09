@@ -7,16 +7,14 @@
 
     <ScrollView
         android:id="@+id/svMessage"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal">
-
+        android:layout_gravity="center_horizontal"
+        android:padding="12dp">
         <EditText
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/editText"
-            android:padding="12dp"
-            android:textSize="@dimen/message_text_size" />
+            android:id="@+id/editText"/>
     </ScrollView>
 
     <include layout="@layout/buttons_part"/>

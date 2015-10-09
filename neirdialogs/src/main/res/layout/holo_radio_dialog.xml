@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/layTitle"
+        layout="@layout/title_part" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+        <ListView
+            android:id="@+id/lvChoice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    <include
+        android:id="@+id/layButtons"
+        layout="@layout/buttons_part" />
+
+</LinearLayout>

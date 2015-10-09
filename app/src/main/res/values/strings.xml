@@ -3,6 +3,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="sound_state">Sound</string>
+    <string name="ok_btn">Ок</string>
+    <string name="cancel_btn">Отмена</string>
     <string name="clean">Clean</string>
     <string name="lap">Lap</string>
     <string name="start">Start</string>
@@ -32,10 +34,10 @@
         <item>Таймер</item>
     </string-array>
     <string-array name="pref_screenOrientation_entries">
+        <item>Системная</item>
         <item>Портрет</item>
         <item>Альбом</item>
         <item>Авто</item>
-        <item>Системная</item>
     </string-array>
 
     //********************** Не Переводится **************************

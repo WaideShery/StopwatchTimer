@@ -1,10 +1,6 @@
 package com.neirx.stopwatchtimer;
 
-import android.app.DialogFragment;
-import android.content.DialogInterface;
-import android.view.View;
-
-import com.neirx.stopwatchtimer.settings.SettingPref;
+import com.neirx.neirdialogs.interfaces.RootDialog;
 import com.neirx.stopwatchtimer.settings.SettingsManagement;
 
 /**
@@ -17,13 +13,13 @@ public class SettingItem {
     private boolean hasCheckBox;
     private boolean isChecked;
     private SettingsManagement.BoolPref key;
-    private DialogFragment dialog = null;
+    private RootDialog dialog = null;
 
-    public DialogFragment getDialog() {
+    public RootDialog getDialog() {
         return dialog;
     }
 
-    public void setDialog(DialogFragment dialog) {
+    public void setDialog(RootDialog dialog) {
         this.dialog = dialog;
     }
 
@@ -39,12 +35,24 @@ public class SettingItem {
         return title;
     }
 
+    public void setSummary(String summary){
+        this.summary = summary;
+    }
+
     public String getSummary() {
         return summary;
     }
 
     public boolean hasCheckBox() {
         return hasCheckBox;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked){
+        isChecked = checked;
     }
 
     public SettingItem(String title) {
@@ -73,13 +81,7 @@ public class SettingItem {
         this.isChecked = isChecked;
     }
 
-    public boolean isChecked() {
-        return isChecked;
-    }
 
-    public void setChecked(boolean checked){
-        isChecked = checked;
-    }
 
 }
 
