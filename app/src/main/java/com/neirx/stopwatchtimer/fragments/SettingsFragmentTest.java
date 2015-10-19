@@ -14,6 +14,7 @@ import com.neirx.neirdialogs.interfaces.NeirDialogInterface;
 import com.neirx.neirdialogs.interfaces.RootDialog;
 import com.neirx.neirdialogs.interfaces.SingleChoiceDialog;
 import com.neirx.stopwatchtimer.CustomDialogFactory;
+import com.neirx.stopwatchtimer.PreferencesActivity;
 import com.neirx.stopwatchtimer.R;
 import com.neirx.stopwatchtimer.SettingItem;
 import com.neirx.stopwatchtimer.custom.SettingsAdapter;
@@ -177,6 +178,7 @@ public class SettingsFragmentTest extends Fragment implements NeirDialogInterfac
                 }
             }
             mAdapter.notifyDataSetChanged();
+            ((PreferencesActivity)getActivity()).switchScreenOrientation();
         }
     }
 

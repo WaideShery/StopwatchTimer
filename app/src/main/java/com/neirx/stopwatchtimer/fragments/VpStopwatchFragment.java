@@ -1,5 +1,6 @@
 package com.neirx.stopwatchtimer.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
@@ -34,8 +35,8 @@ public class VpStopwatchFragment extends Fragment implements ViewPager.OnPageCha
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         //Save the fragment's state here
-        //fragmentManager.putFragment(outState, "stopwatchFragment", stopwatchFragment);
-        //fragmentManager.putFragment(outState, "lapsFragment", lapsFragment);
+        fragmentManager.putFragment(outState, "stopwatchFragment", stopwatchFragment);
+        fragmentManager.putFragment(outState, "lapsFragment", lapsFragment);
     }
 
 
@@ -45,6 +46,10 @@ public class VpStopwatchFragment extends Fragment implements ViewPager.OnPageCha
         View rootView = inflater.inflate(R.layout.fragment_stopwatch_pager, container, false);
 
         fragmentManager = getChildFragmentManager();
+        if(savedInstanceState != null){
+            stopwatchFragment = (StopwatchFragment) fragmentManager.getFragment(savedInstanceState, "stopwatchFragment");
+            lapsFragment = (LapsFragment) fragmentManager.getFragment(savedInstanceState, "lapsFragment");
+        }
 
         // Создание адаптера, который будет возвращать фрагмент для каждой из
         // основных секций/разделов активити.
@@ -129,7 +134,7 @@ public class VpStopwatchFragment extends Fragment implements ViewPager.OnPageCha
 
     }
 
-    /*/-------------------- ћетоды жизненного цикла(BEGIN) --------------------
+    /*/-------------------- Методы жизненного цикла(BEGIN) --------------------
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -180,5 +185,5 @@ public class VpStopwatchFragment extends Fragment implements ViewPager.OnPageCha
         super.onDetach();
         Log.d(MainActivity.TAG, CLASS_NAME + "onDetach");
     }
-    //-------------------- ћетоды жизненного цикла(END) --------------------*/
+    //-------------------- Методы жизненного цикла(END) --------------------*/
 }

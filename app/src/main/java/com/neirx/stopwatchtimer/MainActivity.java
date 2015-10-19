@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -38,18 +39,30 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         //Save the fragment's instance
-        //fragmentManager.putFragment(outState, "vpStopwatchFragment", vpStopwatchFragment);
+        fragmentManager.putFragment(outState, "vpStopwatchFragment", vpStopwatchFragment);
         fragmentManager.putFragment(outState, "bottomMenuFragment", bottomMenuFragment);
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(MainActivity.TAG, CLASS_NAME + "onStart");
+        screenOrientation = settings.getIntPref(SettingPref.Int.screenOrientation, Statical.SCREEN_ORIENTATION_SYSTEM);
+        switchScreenOrientation(screenOrientation);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(MainActivity.TAG, CLASS_NAME + "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Настройка ActionBar
         ActionBar actionBar = getActionBar();
         if(actionBar != null) {
+            //убрать название приложения
             actionBar.setDisplayShowTitleEnabled(false);
+            //установка навигиции с помощью выпадающего списка
             actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
             SpinnerAdapter mSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.drop_down_navigation,
                     android.R.layout.simple_spinner_dropdown_item);
@@ -58,22 +71,20 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
 
         settings = AppSettings.getInstance(this);
         isSoundOn = settings.getBoolPref(SettingPref.Bool.soundState);
-        screenOrientation = settings.getIntPref(SettingPref.Int.screenOrientation, 0);
-
-        switchScreenOrientation(screenOrientation);
 
         fragmentManager = getFragmentManager();
-        vpStopwatchFragment = VpStopwatchFragment.newInstance();
+
+        //vpStopwatchFragment = VpStopwatchFragment.newInstance();
         if(savedInstanceState == null) {
-            //vpStopwatchFragment = vpStopwatchFragment.newInstance();
+            vpStopwatchFragment = VpStopwatchFragment.newInstance();
             bottomMenuFragment = BottomMenuFragment.newInstance();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.mainContainer, vpStopwatchFragment);
+            //fragmentTransaction.add(R.id.mainContainer, vpStopwatchFragment);
             fragmentTransaction.add(R.id.mainContainerBottom, bottomMenuFragment);
             //toBackStack(fragmentTransaction);
             fragmentTransaction.commit();
         } else {
-            //vpStopwatchFragment = (vpStopwatchFragment) fragmentManager.getFragment(savedInstanceState, "vpStopwatchFragment");
+            vpStopwatchFragment = (VpStopwatchFragment) fragmentManager.getFragment(savedInstanceState, "vpStopwatchFragment");
             bottomMenuFragment = (BottomMenuFragment) fragmentManager.getFragment(savedInstanceState, "bottomMenuFragment");
         }
 
@@ -81,6 +92,10 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
 
     }
 
+    /**
+     * Установка ориентации экрана приложения
+     * @param orientation сохраненная в настройках ориентация
+     */
     private void switchScreenOrientation(int orientation){
         switch (orientation){
             case Statical.SCREEN_ORIENTATION_SYSTEM:
@@ -98,19 +113,33 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         }
     }
 
+    /**
+     * Метод для сообщения фрагменту BottomMenuFragment, что произошло нажатие на
+     * view секундомера.
+     */
     public void clickedStopwatch(){
         if(bottomMenuFragment != null){
             bottomMenuFragment.clickedStopwatch();
         }
     }
 
+    /**
+     * Возвращает ссылку на фрагмент LapsFragment
+     */
     public LapsFragment getLapsFragment() {
         return vpStopwatchFragment.getLapsFragment();
     }
 
+    /**
+     * Возвращает ссылку на фрагмент StopwatchFragment
+     */
     public StopwatchFragment getStopwatchFragment() {
         return vpStopwatchFragment.getStopwatchFragment();
     }
+
+    /**
+     * Скрытие пункта меню для очистки списка кругов
+     */
     public void setVisibleClearMenu(boolean visible){
         isVisibleClearMenu = visible;
     }
@@ -173,10 +202,11 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
 
     @Override
     public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+        Log.d(TAG, CLASS_NAME + "onNavigationItemSelected");
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         switch (itemPosition) {
             case 0:
-                fragmentTransaction.replace(R.id.mainContainer, VpStopwatchFragment.newInstance());
+                fragmentTransaction.replace(R.id.mainContainer, vpStopwatchFragment);
                 break;
             case 1:
                 fragmentTransaction.replace(R.id.mainContainer, TimerPagerFragment.newInstance());
@@ -186,16 +216,11 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         return true;
     }
 
-    /*/-------------------- Методы жизненного цикла(BEGIN) --------------------
+    //-------------------- Методы жизненного цикла(BEGIN) --------------------
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         Log.d(MainActivity.TAG, CLASS_NAME + "onRestoreInstanceState");
-    }
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d(MainActivity.TAG, CLASS_NAME + "onStart");
     }
     @Override
     protected void onRestart() {
@@ -222,5 +247,5 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         super.onDestroy();
         Log.d(MainActivity.TAG, CLASS_NAME + "onDestroy");
     }
-    //-------------------- Методы жизненного цикла(END) --------------------*/
+    //-------------------- Методы жизненного цикла(END) --------------------/
 }

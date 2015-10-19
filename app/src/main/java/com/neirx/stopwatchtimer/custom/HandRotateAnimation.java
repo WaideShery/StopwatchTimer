@@ -1,12 +1,10 @@
 package com.neirx.stopwatchtimer.custom;
 
-import android.util.Log;
 import android.view.animation.RotateAnimation;
 import android.view.animation.Transformation;
 
 
 public class HandRotateAnimation extends RotateAnimation {
-
     private static final String CLASS_NAME = "<HandRotateAnimation> ";
     private long elapsedAtPause=0;
     private boolean paused=false;
