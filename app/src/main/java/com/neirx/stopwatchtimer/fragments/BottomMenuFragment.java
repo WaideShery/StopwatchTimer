@@ -95,7 +95,7 @@ public class BottomMenuFragment extends Fragment implements View.OnClickListener
             case R.id.btnStopwatchStartStop:
                 isStopwatchRun = !isStopwatchRun;
                 convertStartStop();
-                stopwatchFragment.stopwatchStartStop();
+                stopwatchFragment.switchStopwatch();
                 break;
         }
     }

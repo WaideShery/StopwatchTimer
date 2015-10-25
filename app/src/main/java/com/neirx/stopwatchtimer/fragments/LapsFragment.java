@@ -25,6 +25,7 @@ public class LapsFragment extends Fragment {
     List<Lap> laps;//коллекция с массивом будильников
     static LapAdapter lapAdapter;//адаптер для создания view
     DBHelper dbHelper; //создание объкта для работы с базой данных
+    int stopwatchNum = 1;
     int lastStopwatchNum = 0;
     int hours =0;
     int minutes = 0;
@@ -53,6 +54,10 @@ public class LapsFragment extends Fragment {
     public void clearLaps(){
         dbHelper.clearLaps();
         lapAdapter.clearLapsFromList();
+        MainActivity activity = (MainActivity) getActivity();
+        if (activity != null){
+            activity.getStopwatchFragment().clearLapsNum();
+        }
     }
 
     @Override
@@ -61,10 +66,12 @@ public class LapsFragment extends Fragment {
         Log.d(MainActivity.TAG, CLASS_NAME + "onResume");
     }
 
-    public void addLap(int timeNum, int hours, int minutes, int seconds, int millis){
+    public void addLap(int stopwatchNum, int timeNum, int hours, int minutes, int seconds, int millis){
+        if(this.stopwatchNum != stopwatchNum) hours=minutes=seconds=millis=0;
         Log.d(MainActivity.TAG, CLASS_NAME + hours+":"+minutes+":"+seconds+"."+millis);
-        Lap lap = new Lap(lastStopwatchNum, timeNum,formatTime(hours, minutes, seconds, millis),
+        Lap lap = new Lap(stopwatchNum, timeNum,formatTime(hours, minutes, seconds, millis),
                 formatTimeDifference(((hours*60+minutes)*60+seconds)*1000+millis));
+        this.stopwatchNum = stopwatchNum;
         this.hours = hours;
         this.minutes = minutes;
         this.seconds = seconds;
