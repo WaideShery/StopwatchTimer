@@ -3,12 +3,63 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:id="@+id/tableHeader"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:gravity="center">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/num_time"
+                android:textStyle="bold"
+                android:textColor="@color/hour_minute_text"
+                android:textSize="@dimen/millis_text_adapter"
+                android:id="@+id/tvLapAdapNum" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_weight="3"
+            android:gravity="center_horizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/total_time"
+                android:textColor="@color/hour_minute_text"
+                android:textSize="@dimen/time_text_adapter"
+                android:id="@+id/tvLapAdapTimeTotal" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_weight="3"
+            android:gravity="center_horizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lap_time"
+                android:textColor="@color/hour_minute_text"
+                android:textSize="@dimen/time_text_adapter"
+                android:id="@+id/tvLapAdapTimeDiffer" />
+        </LinearLayout>
+    </LinearLayout>
 
     <ListView
+        android:layout_below="@id/tableHeader"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/lvLaps"
         android:divider="@color/grey_line"
-        android:dividerHeight="@dimen/listview_line"
-        android:layout_alignParentTop="true"/>
+        android:dividerHeight="@dimen/listview_line" />
 </RelativeLayout>

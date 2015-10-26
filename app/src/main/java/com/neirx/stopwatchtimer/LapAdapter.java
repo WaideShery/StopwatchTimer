@@ -66,12 +66,14 @@ public class LapAdapter extends BaseAdapter {
 
         Lap lap = (Lap) getItem(position);
         tvNum.setText(lap.getStopwatchNum()+"."+lap.getTimeNum()+")");
-        tvTimeDiffer.setText(lap.getTimeDifference().substring(0, 6));
-        tvSecondsDiffer.setText(lap.getTimeDifference().substring(6, 9));
-        tvMillisDiffer.setText(lap.getTimeDifference().substring(9, 12));
+
         tvTimeTotal.setText(lap.getTimeTotal().substring(0, 6));
         tvSecondsTotal.setText(lap.getTimeTotal().substring(6, 9));
         tvMillisTotal.setText(lap.getTimeTotal().substring(9, 12));
+
+        tvTimeDiffer.setText(lap.getTimeDifference().substring(0, 6));
+        tvSecondsDiffer.setText(lap.getTimeDifference().substring(6, 9));
+        tvMillisDiffer.setText(lap.getTimeDifference().substring(9, 12));
         return view;
     }
 }

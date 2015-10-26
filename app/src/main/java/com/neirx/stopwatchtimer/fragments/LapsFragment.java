@@ -67,7 +67,7 @@ public class LapsFragment extends Fragment {
     }
 
     public void addLap(int stopwatchNum, int timeNum, int hours, int minutes, int seconds, int millis){
-        if(this.stopwatchNum != stopwatchNum) hours=minutes=seconds=millis=0;
+        if(this.stopwatchNum != stopwatchNum) this.hours=this.minutes=this.seconds=this.millis=0;
         Log.d(MainActivity.TAG, CLASS_NAME + hours+":"+minutes+":"+seconds+"."+millis);
         Lap lap = new Lap(stopwatchNum, timeNum,formatTime(hours, minutes, seconds, millis),
                 formatTimeDifference(((hours*60+minutes)*60+seconds)*1000+millis));
