@@ -1,8 +1,10 @@
 package com.neirx.stopwatchtimer;
 
 import android.content.Context;
+import android.graphics.Typeface;
 
 import com.neirx.neirdialogs.HoloDialogFactory;
+import com.neirx.neirdialogs.enums.TextStyle;
 
 
 /**
@@ -21,5 +23,18 @@ public class CustomDialogFactory extends HoloDialogFactory {
 
     protected CustomDialogFactory(Context context) {
         super(context);
+        setBackgroundDialogColor(context.getResources().getColor(R.color.app_background));
+        setSingleChoiceSelector(R.drawable.dialog_list_selector);
+        setSChoiceDividerColor(context.getResources().getColor(R.color.dialog_title_divider));
+        setSingleChoiceRightFlag(R.drawable.apptheme_btn_radio_holo_light);
+        setSingleChoiceTextColor(context.getResources().getColor(R.color.dialog_list_text));
+        setSingleChoiceTextSize(16);
+        setButtonSelector(R.drawable.dialog_btn_selector);
+        setButtonTextColor(context.getResources().getColor(R.color.dialog_btn_text));
+        setDividerButtonHorizontalColor(context.getResources().getColor(R.color.dialog_title_divider));
+        setDividerButtonVerticalColor(context.getResources().getColor(R.color.dialog_title_divider));
+        setTitleColor(context.getResources().getColor(R.color.dialog_title_divider));
+        //setTitleTypeface(Typeface.DEFAULT, TextStyle.BOLD);
+        setDividerTitleColor(context.getResources().getColor(R.color.dialog_title_divider));
     }
 }

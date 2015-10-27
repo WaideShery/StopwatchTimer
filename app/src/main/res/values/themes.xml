@@ -9,6 +9,7 @@
         <item name="android:actionDropDownStyle">@style/ActionDropDownList</item>
         <item name="android:actionOverflowButtonStyle">@style/MyActionButtonOverflow</item>
         <item name="android:actionBarItemBackground">@drawable/selector_ab_item</item>
+        <item name="android:homeAsUpIndicator">@drawable/back_arrow</item>
     </style>
 
 
@@ -16,8 +17,13 @@
     <style name="MyActionBar" parent="android:style/Widget.Holo.Light.ActionBar">
         <item name="android:background">@drawable/actionbar_background</item>
         <item name="android:icon">@drawable/icon</item>
-        <item name="android:displayOptions">useLogo|showHome</item>
+        <item name="android:displayOptions">useLogo|showHome|showTitle</item>
+        <item name="android:titleTextStyle">@style/MyActionBar.TitleTextStyle</item>
         <item name="android:actionMenuTextColor">@color/actionbar_text</item>
+    </style>
+
+    <style name="MyActionBar.TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/actionbar_text</item>
     </style>
 
     <style name="ActionDropDownList" parent="android:style/Widget.Holo.Spinner">

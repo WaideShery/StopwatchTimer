@@ -10,4 +10,5 @@ public class Statical {
     public final static int SCREEN_ORIENTATION_PORTRAIT = 1;
     public final static int SCREEN_ORIENTATION_LANDSCAPE = 2;
     public final static int SCREEN_ORIENTATION_AUTO = 3;
+
 }

@@ -4,9 +4,11 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.Menu;
@@ -33,12 +35,17 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
     FragmentManager fragmentManager;
     VpStopwatchFragment vpStopwatchFragment;
     BottomMenuFragment bottomMenuFragment;
+    protected PowerManager.WakeLock mWakeLock;
+    private boolean keepScreenOn;
+    PowerManager pm;
+
 
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         //Save the fragment's instance
+        outState.putBoolean("keepScreenOn", keepScreenOn);
         fragmentManager.putFragment(outState, "vpStopwatchFragment", vpStopwatchFragment);
         fragmentManager.putFragment(outState, "bottomMenuFragment", bottomMenuFragment);
     }
@@ -59,16 +66,20 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
 
         //Настройка ActionBar
         ActionBar actionBar = getActionBar();
+        String[] titleList = getResources().getStringArray(R.array.drop_down_navigation);
+        setTitle("Секундомер");
+
         if(actionBar != null) {
-            //убрать название приложения
+            /*/убрать название приложения
             actionBar.setDisplayShowTitleEnabled(false);
             //установка навигиции с помощью выпадающего списка
             actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
             SpinnerAdapter mSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.drop_down_navigation,
                     android.R.layout.simple_spinner_dropdown_item);
             actionBar.setListNavigationCallbacks(mSpinnerAdapter, this);
+            //*/
         }
-
+        pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         settings = AppSettings.getInstance(this);
         isSoundOn = settings.getBoolPref(SettingPref.Bool.soundState);
 
@@ -79,11 +90,12 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
             vpStopwatchFragment = VpStopwatchFragment.newInstance();
             bottomMenuFragment = BottomMenuFragment.newInstance();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            //fragmentTransaction.add(R.id.mainContainer, vpStopwatchFragment);
+            fragmentTransaction.add(R.id.mainContainer, vpStopwatchFragment);
             fragmentTransaction.add(R.id.mainContainerBottom, bottomMenuFragment);
             //toBackStack(fragmentTransaction);
             fragmentTransaction.commit();
         } else {
+            keepScreenOn = savedInstanceState.getBoolean("keepScreenOn", false);
             vpStopwatchFragment = (VpStopwatchFragment) fragmentManager.getFragment(savedInstanceState, "vpStopwatchFragment");
             bottomMenuFragment = (BottomMenuFragment) fragmentManager.getFragment(savedInstanceState, "bottomMenuFragment");
         }
@@ -117,9 +129,26 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
      * Метод для сообщения фрагменту BottomMenuFragment, что произошло нажатие на
      * view секундомера.
      */
-    public void clickedStopwatch(){
+    public void clickedStopwatch(boolean isRun){
         if(bottomMenuFragment != null){
-            bottomMenuFragment.clickedStopwatch();
+            bottomMenuFragment.clickedStopwatch(isRun);
+        }
+        boolean isNotTurnOffScreen = settings.getBoolPref(SettingPref.Bool.isNotTurnOffScreen, false);
+        if (isNotTurnOffScreen) {
+            keepScreenOn = isRun;
+            wakeLock();
+        }
+
+    }
+
+    public void wakeLock(){
+        Log.d(MainActivity.TAG, CLASS_NAME + "keepScreenOn = "+keepScreenOn);
+        if(keepScreenOn){
+            this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, "ScreeOnTag");
+            this.mWakeLock.acquire();
+        } else if(mWakeLock != null) {
+            mWakeLock.release();
+            mWakeLock = null;
         }
     }
 
@@ -216,6 +245,23 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         return true;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        wakeLock();
+        Log.d(MainActivity.TAG, CLASS_NAME + "onResume");
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(mWakeLock != null) {
+            mWakeLock.release();
+            mWakeLock = null;
+        }
+        super.onDestroy();
+        Log.d(MainActivity.TAG, CLASS_NAME + "onDestroy");
+    }
+
     //-------------------- Методы жизненного цикла(BEGIN) --------------------
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
@@ -227,11 +273,11 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         super.onRestart();
         Log.d(MainActivity.TAG, CLASS_NAME + "onRestart");
     }
-    @Override
+    /*@Override
     protected void onResume() {
         super.onResume();
         Log.d(MainActivity.TAG, CLASS_NAME + "onResume");
-    }
+    }*/
     @Override
     protected void onPause() {
         super.onPause();
@@ -242,10 +288,10 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         super.onStop();
         Log.d(MainActivity.TAG, CLASS_NAME + "onStop");
     }
-    @Override
+    /*@Override
     protected void onDestroy() {
         super.onDestroy();
         Log.d(MainActivity.TAG, CLASS_NAME + "onDestroy");
-    }
+    }*/
     //-------------------- Методы жизненного цикла(END) --------------------/
 }

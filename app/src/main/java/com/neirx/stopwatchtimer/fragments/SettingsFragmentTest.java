@@ -114,9 +114,9 @@ public class SettingsFragmentTest extends Fragment implements NeirDialogInterfac
         mAdapter.addItem(settingItem);
 
         //Заголовок "Звуки"
-        mAdapter.addSectionHeaderItem(new SettingItem(titleSound));
+        //mAdapter.addSectionHeaderItem(new SettingItem(titleSound));
 
-        //Настройка "Звук кнопок"
+        /*/Настройка "Звук кнопок"
         isChecked = settings.getBoolPref(SettingPref.Bool.keySoundState);
         settingItem = new SettingItem(titleKeySoundStatus, sumKeySoundStatus, isChecked);
         settingItem.setKey(SettingPref.Bool.keySoundState);

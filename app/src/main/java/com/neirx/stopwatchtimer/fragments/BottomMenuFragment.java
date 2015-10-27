@@ -60,8 +60,8 @@ public class BottomMenuFragment extends Fragment implements View.OnClickListener
     /**
      * Метод для переключения состояний кнопок в нижнем меню при нажатии на view Секундомера
      */
-    public void clickedStopwatch(){
-        isStopwatchRun = !isStopwatchRun;
+    public void clickedStopwatch(boolean isRun){
+        isStopwatchRun = isRun;
         convertStartStop();
     }
 

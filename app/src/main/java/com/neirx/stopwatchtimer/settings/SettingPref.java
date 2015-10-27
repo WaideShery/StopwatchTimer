@@ -4,7 +4,7 @@ package com.neirx.stopwatchtimer.settings;
 public class SettingPref {
     public enum Bool implements SettingsManagement.BoolPref {
         soundState, isNotTurnOffScreen, isDialClickable, vibrateState, keySoundState, longTimerAlarmState,
-        isCustomTimerSound, isStopwatchRun, wasReset
+        isCustomTimerSound, isStopwatchRun, wasStopwatchStart, incrStopwatchNum, isFirst
     }
     public enum String implements SettingsManagement.StringPref{
 

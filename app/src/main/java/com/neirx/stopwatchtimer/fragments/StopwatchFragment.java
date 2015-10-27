@@ -2,8 +2,11 @@ package com.neirx.stopwatchtimer.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -12,7 +15,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.neirx.stopwatchtimer.MainActivity;
@@ -35,14 +37,15 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
     Stopwatch stopwatch;
     LapsFragment lapsFragment;
     MainActivity activity;
-    boolean isStopwatchRunning, isStopwatchStart, isStopwatchClickable, wasAddLap;
+    boolean isStopwatchRunning, wasStopwatchStart, isStopwatchClickable, incrStopwatchNum, needStartCount;
     long totalTime, baseTime, savedTime;
-    int countTimeNum, countStopwatchNum = 1;
+    int countTimeNum, countStopwatchNum;
     int secondsTime;
     int millisTime;
     int minutesTime;
     int hoursTime;
     float secDegree, minDegree;
+    private Vibrator vibrator;
 
 
     public static StopwatchFragment newInstance() {
@@ -60,6 +63,8 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
         outState.putFloat("secDegree", secDegree);
         outState.putFloat("minDegree", minDegree);
         outState.putBoolean("isStopwatchRunning", isStopwatchRunning);
+        outState.putBoolean("wasStopwatchStart", wasStopwatchStart);
+        outState.putBoolean("incrStopwatchNum", incrStopwatchNum);
         Log.d(MainActivity.TAG, CLASS_NAME + "onSaveInstanceState");
     }
 
@@ -71,6 +76,7 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
         FrameLayout layoutStopwatch = (FrameLayout) rootView.findViewById(R.id.laySwStopwatch);
         layoutStopwatch.setOnClickListener(this);
         activity = (MainActivity) getActivity();
+        vibrator = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
         tvHours = (TextView) rootView.findViewById(R.id.tvSwHours);
         tvMinutes = (TextView) rootView.findViewById(R.id.tvSwMinutes);
         tvSeconds = (TextView) rootView.findViewById(R.id.tvSwSeconds);
@@ -85,9 +91,9 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
             public void onGlobalLayout() {
                 int stopwatchHeight = ivDial.getHeight();
                 Log.d(MainActivity.TAG, CLASS_NAME + "stopwatchHeight = " + stopwatchHeight);
-                int minHeight = (int) (stopwatchHeight / 1.4949);
-                int minWidth = (int) (minHeight / 18.96);
-                Log.d(MainActivity.TAG, CLASS_NAME + "minWidth = " + minWidth + "minHeight = " + minHeight);
+                int minHeight = (int) (stopwatchHeight / 1.4938);
+                int minWidth = (int) (minHeight / 11.85);
+                Log.d(MainActivity.TAG, CLASS_NAME + "minWidth = " + minWidth + " minHeight = " + minHeight);
                 FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(minWidth, minHeight);
                 params.gravity = Gravity.CENTER_HORIZONTAL | Gravity.TOP;
                 ivMinuteHand.setLayoutParams(params);
@@ -103,6 +109,7 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
 
         });
 
+        //final MediaPlayer mp = MediaPlayer.create(this, R.raw.soho);
 
         isStopwatchClickable = settings.getBoolPref(SettingPref.Bool.isDialClickable, true);
 
@@ -110,9 +117,11 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
 
         if (savedInstanceState == null) {
             countTimeNum = settings.getIntPref(SettingPref.Int.countTimeNum);
-            countStopwatchNum = settings.getIntPref(SettingPref.Int.countStopwatchNum, 1);
+            countStopwatchNum = settings.getIntPref(SettingPref.Int.countStopwatchNum, 0);
             baseTime = settings.getLongPref(SettingPref.Long.stopwatchBaseTime, -1);
             savedTime = settings.getLongPref(SettingPref.Long.stopwatchSavedTime, 0);
+            wasStopwatchStart = settings.getBoolPref(SettingPref.Bool.wasStopwatchStart, false);
+            incrStopwatchNum = settings.getBoolPref(SettingPref.Bool.incrStopwatchNum, true);
             if (savedTime > 0) {
                 stopwatch.setSavedTime(savedTime);
             }
@@ -140,10 +149,12 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
         } else {
             Log.d(MainActivity.TAG, CLASS_NAME + "savedInstanceState != null");
             isStopwatchRunning = savedInstanceState.getBoolean("isStopwatchRunning", false);
+            wasStopwatchStart = savedInstanceState.getBoolean("wasStopwatchStart", false);
+            incrStopwatchNum = savedInstanceState.getBoolean("incrStopwatchNum", true);
             secDegree = savedInstanceState.getFloat("secDegree", 0);
             minDegree = savedInstanceState.getFloat("minDegree", 0);
             countTimeNum = savedInstanceState.getInt("countTimeNum", 0);
-            countStopwatchNum = savedInstanceState.getInt("countStopwatchNum", 1);
+            countStopwatchNum = savedInstanceState.getInt("countStopwatchNum", 0);
             baseTime = savedInstanceState.getLong("baseTime", -1);
             savedTime = savedInstanceState.getLong("savedTime", 0);
             ivSecondHand.setRotation(secDegree);
@@ -153,15 +164,32 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
             }
             if (isStopwatchRunning && baseTime != -1) {
                 stopwatch.setBaseTime(baseTime);
-                stopwatch.start();
+                startCount();
             } else {
                 totalTime = savedTime;
                 parseTotalTime(true);
             }
         }
-        Log.d(MainActivity.TAG, CLASS_NAME + "countStopwatchNum = "+ countStopwatchNum);
-
+        Log.d(MainActivity.TAG, CLASS_NAME + "countStopwatchNum = " + countStopwatchNum);
+        needStartCount = false;
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(MainActivity.TAG, CLASS_NAME + "onResume");
+        if (needStartCount && isStopwatchRunning) {
+            startCount();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopwatch.release();
+        needStartCount = true;
+        Log.d(MainActivity.TAG, CLASS_NAME + "onStop");
     }
 
     @Override
@@ -171,10 +199,39 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
                 if (isStopwatchClickable) {
                     switchStopwatch();
                 }
-                if (activity != null) {
-                    activity.clickedStopwatch();
-                }
                 break;
+        }
+    }
+
+    private void startEffect() {
+        boolean sound = settings.getBoolPref(SettingPref.Bool.soundState);
+        boolean vibrate = settings.getBoolPref(SettingPref.Bool.vibrateState);
+        if (vibrate) {
+            vibrator.vibrate(25);
+        }
+    }
+
+    private void stopEffect() {
+        boolean sound = settings.getBoolPref(SettingPref.Bool.soundState);
+        boolean vibrate = settings.getBoolPref(SettingPref.Bool.vibrateState);
+        if (vibrate) {
+            vibrator.vibrate(20);
+        }
+    }
+
+    private void resetEffect() {
+        boolean sound = settings.getBoolPref(SettingPref.Bool.soundState);
+        boolean vibrate = settings.getBoolPref(SettingPref.Bool.vibrateState);
+        if (vibrate) {
+            vibrator.vibrate(70);
+        }
+    }
+
+    private void addLapEffect() {
+        boolean sound = settings.getBoolPref(SettingPref.Bool.soundState);
+        boolean vibrate = settings.getBoolPref(SettingPref.Bool.vibrateState);
+        if (vibrate) {
+            vibrator.vibrate(30);
         }
     }
 
@@ -183,7 +240,14 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
      */
     public void addNewLap() {
         if (isStopwatchRunning) {
+            if (incrStopwatchNum) {
+                countStopwatchNum++;
+                incrStopwatchNum = false;
+                settings.setPref(SettingPref.Bool.incrStopwatchNum, false);
+                settings.setPref(SettingPref.Int.countStopwatchNum, countStopwatchNum);
+            }
             countTimeNum++;
+            addLapEffect();
             settings.setPref(SettingPref.Int.countTimeNum, countTimeNum);
             if (lapsFragment == null) {
                 if (activity != null) {
@@ -192,25 +256,26 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
             }
             if (lapsFragment != null) {
                 lapsFragment.addLap(countStopwatchNum, countTimeNum, hoursTime, minutesTime, secondsTime, millisTime);
-                wasAddLap = true;
             }
         }
     }
 
     public void clearLapsNum() {
         countTimeNum = 0;
-        countStopwatchNum = 1;
+        countStopwatchNum = 0;
+        incrStopwatchNum = true;
+        settings.setPref(SettingPref.Bool.incrStopwatchNum, true);
         settings.setPref(SettingPref.Int.countTimeNum, countTimeNum);
         settings.setPref(SettingPref.Int.countStopwatchNum, countStopwatchNum);
     }
-        /**
-         * Действия по нажатию кнопки сброса. Проигрывается обратная анимация стрелок до нуля.
-         * Обнуляется в настройках значение пройденного время в миллисекундах и значение начала отсчета секундомера.
-         */
+
+    /**
+     * Действия по нажатию кнопки сброса. Проигрывается обратная анимация стрелок до нуля.
+     * Обнуляется в настройках значение пройденного время в миллисекундах и значение начала отсчета секундомера.
+     */
     public void stopwatchReset() {
-        if(!isStopwatchStart) return;
-        isStopwatchStart = false;
-        countStopwatchNum++;
+        if (!wasStopwatchStart) return;
+        wasStopwatchStart = false;
         countTimeNum = 0;
         stopwatch.reset();
         resetTimeView();
@@ -218,12 +283,15 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
         totalTime = 0;
         baseTime = -1;
         savedTime = 0;
-        //secDegree = 0;
+        incrStopwatchNum = true;
+        resetEffect();
+        settings.setPref(SettingPref.Bool.incrStopwatchNum, true);
+        settings.setPref(SettingPref.Bool.wasStopwatchStart, wasStopwatchStart);
         settings.setPref(SettingPref.Int.countTimeNum, countTimeNum);
         settings.setPref(SettingPref.Int.countStopwatchNum, countStopwatchNum);
         settings.setPref(SettingPref.Long.stopwatchBaseTime, baseTime);
         settings.setPref(SettingPref.Long.stopwatchSavedTime, savedTime);
-        //ivSecondHand.setRotation(0);
+        activity.clickedStopwatch(isStopwatchRunning);
         resetStopwatchAnimation();
     }
 
@@ -236,11 +304,14 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
     public void switchStopwatch() {
         if (!isStopwatchRunning) {
             isStopwatchRunning = true;
+            startEffect();
             startCount();
         } else {
             isStopwatchRunning = false;
+            stopEffect();
             pauseCount();
         }
+        activity.clickedStopwatch(isStopwatchRunning);
     }
 
     /**
@@ -249,8 +320,9 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
      */
     private void startCount() {
         stopwatch.start();
-        isStopwatchStart = true;
+        if (!wasStopwatchStart) wasStopwatchStart = true;
         baseTime = stopwatch.getBaseTime();
+        settings.setPref(SettingPref.Bool.wasStopwatchStart, true);
         settings.setPref(SettingPref.Long.stopwatchBaseTime, baseTime);
         Log.d(MainActivity.TAG, CLASS_NAME + "startCount");
     }
@@ -272,6 +344,7 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
     public void onTick(long millis) {
         if (!isStopwatchRunning) return;
         totalTime = millis;
+        //if(millis % 1000 == 0) Log.d(Statical.TAG, CLASS_NAME+"thread = "+Thread.currentThread().getName());
         secDegree = (millis * 360f) / 60000f;
         minDegree = (millis * 360f) / 1800000f;
         activity.runOnUiThread(new Runnable() {
@@ -292,8 +365,8 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
             minDegree -= 360;
         }
         int div = getDiv(secDegree, minDegree);
-        float secDiv = (secDegree/div);
-        float minDiv = (minDegree/div);
+        float secDiv = (secDegree / div);
+        float minDiv = (minDegree / div);
         final float secSubtract = secDiv > 0 ? secDiv : 1;
         final float minSubtract = minDiv > 0 ? minDiv : 1;
         final Timer timer = new Timer();
@@ -334,9 +407,9 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
     private int getDiv(float a, float b) {
         float x = a > b ? a : b;
         int y = 6;
-        if(x > 90) y = 7;
-        if(x > 180) y = 8;
-        if(x > 270) y = 9;
+        if (x > 90) y = 7;
+        if (x > 180) y = 8;
+        if (x > 270) y = 9;
         int div = (int) (x / y);
         return div > 0 ? div : 1;
     }
@@ -415,7 +488,7 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
         Log.d(MainActivity.TAG, CLASS_NAME + "resetCount");
     }
 
-    /*/-------------------- Методы жизненного цикла(BEGIN) --------------------
+    //-------------------- Методы жизненного цикла(BEGIN) --------------------
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -440,11 +513,11 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
         Log.d(MainActivity.TAG, CLASS_NAME + "onStart");
     }
 
-    @Override
+    /*@Override
     public void onResume() {
         super.onResume();
         Log.d(MainActivity.TAG, CLASS_NAME + "onResume");
-    }
+    }*/
 
     @Override
     public void onPause() {
@@ -452,12 +525,11 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
         Log.d(MainActivity.TAG, CLASS_NAME + "onPause");
     }
 
-    @Override
+    /*@Override
     public void onStop() {
         super.onStop();
-        stopwatch.release();
         Log.d(MainActivity.TAG, CLASS_NAME + "onStop");
-    }
+    }*/
 
     @Override
     public void onDestroyView() {

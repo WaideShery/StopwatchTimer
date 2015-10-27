@@ -7,8 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 
 
@@ -25,12 +23,14 @@ public class LapsFragment extends Fragment {
     List<Lap> laps;//коллекция с массивом будильников
     static LapAdapter lapAdapter;//адаптер для создания view
     DBHelper dbHelper; //создание объкта для работы с базой данных
+    ListView listView;
     int stopwatchNum = 1;
     int lastStopwatchNum = 0;
     int hours =0;
     int minutes = 0;
     int seconds = 0;
     int millis = 0;
+    private boolean wasClear;
 
     public static LapsFragment newInstance() {
         return new LapsFragment();
@@ -43,7 +43,7 @@ public class LapsFragment extends Fragment {
         laps = dbHelper.getLaps();
         lapAdapter = new LapAdapter(getActivity(), laps);
 
-        ListView listView = (ListView) rootView.findViewById(R.id.lvLaps);
+        listView = (ListView) rootView.findViewById(R.id.lvLaps);
         listView.setAdapter(lapAdapter);
         if(laps.size() > 0){
             lastStopwatchNum = laps.get(laps.size()-1).getStopwatchNum();
@@ -54,6 +54,7 @@ public class LapsFragment extends Fragment {
     public void clearLaps(){
         dbHelper.clearLaps();
         lapAdapter.clearLapsFromList();
+        wasClear = true;
         MainActivity activity = (MainActivity) getActivity();
         if (activity != null){
             activity.getStopwatchFragment().clearLapsNum();
@@ -64,10 +65,15 @@ public class LapsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d(MainActivity.TAG, CLASS_NAME + "onResume");
+        scrollListViewToBottom();
     }
 
     public void addLap(int stopwatchNum, int timeNum, int hours, int minutes, int seconds, int millis){
-        if(this.stopwatchNum != stopwatchNum) this.hours=this.minutes=this.seconds=this.millis=0;
+        if(this.stopwatchNum != stopwatchNum || wasClear) {
+            this.hours=this.minutes=this.seconds=this.millis=0;
+            wasClear = false;
+        }
+
         Log.d(MainActivity.TAG, CLASS_NAME + hours+":"+minutes+":"+seconds+"."+millis);
         Lap lap = new Lap(stopwatchNum, timeNum,formatTime(hours, minutes, seconds, millis),
                 formatTimeDifference(((hours*60+minutes)*60+seconds)*1000+millis));
@@ -78,8 +84,18 @@ public class LapsFragment extends Fragment {
         this.millis = millis;
         dbHelper.addLap(lap);
         lapAdapter.addLapToList(lap);
+        scrollListViewToBottom();
     }
 
+    private void scrollListViewToBottom() {
+        listView.post(new Runnable() {
+            @Override
+            public void run() {
+                // Select the last row so it will scroll into view...
+                listView.setSelection(listView.getCount() - 1);
+            }
+        });
+    }
 
     private String formatTimeDifference(long lastTimeInMillis){
         long penultTime = ((hours*60+minutes)*60+seconds)*1000+millis;
