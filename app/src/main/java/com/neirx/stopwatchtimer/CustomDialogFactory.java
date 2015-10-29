@@ -28,7 +28,7 @@ public class CustomDialogFactory extends HoloDialogFactory {
         setSChoiceDividerColor(context.getResources().getColor(R.color.dialog_title_divider));
         setSingleChoiceRightFlag(R.drawable.apptheme_btn_radio_holo_light);
         setSingleChoiceTextColor(context.getResources().getColor(R.color.dialog_list_text));
-        setSingleChoiceTextSize(16);
+        setSingleChoiceTextSize(14);
         setButtonSelector(R.drawable.dialog_btn_selector);
         setButtonTextColor(context.getResources().getColor(R.color.dialog_btn_text));
         setDividerButtonHorizontalColor(context.getResources().getColor(R.color.dialog_title_divider));
@@ -36,5 +36,6 @@ public class CustomDialogFactory extends HoloDialogFactory {
         setTitleColor(context.getResources().getColor(R.color.dialog_title_divider));
         //setTitleTypeface(Typeface.DEFAULT, TextStyle.BOLD);
         setDividerTitleColor(context.getResources().getColor(R.color.dialog_title_divider));
+        //setMessagePadding(10, 15, 10, 15);
     }
 }

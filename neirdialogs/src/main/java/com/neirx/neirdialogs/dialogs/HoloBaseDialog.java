@@ -55,7 +55,7 @@ public abstract class HoloBaseDialog extends HoloRootDialog implements View.OnCl
     private @DrawableRes int topDividerBtnResId = -1, leftDividerBtnResId = -1, rightDividerBtnResId = -1;
     private boolean isTopDividerBtnRes, isLeftDividerBtnRes, isRightDividerBtnRes;
 
-    protected float topDividerBtnWidth = 0, leftDividerBtnWidth = 0, rightDividerBtnWidth = 0;
+    protected float topDividerBtnDepth = 0, leftDividerBtnDepth = 0, rightDividerBtnDepth = 0;
 
     //Обработчик нажатий на кнопки
     protected NeirDialogInterface.OnClickListener onClickListener;
@@ -447,9 +447,9 @@ public abstract class HoloBaseDialog extends HoloRootDialog implements View.OnCl
      * @param widthDp ширина в dp
      */
     public void setDividersBtnWidth(float widthDp) {
-        topDividerBtnWidth = widthDp;
-        leftDividerBtnWidth = widthDp;
-        rightDividerBtnWidth = widthDp;
+        topDividerBtnDepth = widthDp;
+        leftDividerBtnDepth = widthDp;
+        rightDividerBtnDepth = widthDp;
     }
 
     /**
@@ -457,8 +457,8 @@ public abstract class HoloBaseDialog extends HoloRootDialog implements View.OnCl
      *
      * @param widthDp ширина в dp
      */
-    public void setTopDividerBtnWidth(float widthDp) {
-        topDividerBtnWidth = widthDp;
+    public void setTopDividerBtnDepth(float widthDp) {
+        topDividerBtnDepth = widthDp;
     }
 
     /**
@@ -466,8 +466,8 @@ public abstract class HoloBaseDialog extends HoloRootDialog implements View.OnCl
      *
      * @param widthDp ширина в dp
      */
-    public void setLeftDividerBtnWidth(float widthDp) {
-        leftDividerBtnWidth = widthDp;
+    public void setLeftDividerBtnDepth(float widthDp) {
+        leftDividerBtnDepth = widthDp;
     }
 
 
@@ -476,8 +476,8 @@ public abstract class HoloBaseDialog extends HoloRootDialog implements View.OnCl
      *
      * @param widthDp ширина в dp
      */
-    public void setRightDividerBtnWidth(float widthDp) {
-        rightDividerBtnWidth = widthDp;
+    public void setRightDividerBtnDepth(float widthDp) {
+        rightDividerBtnDepth = widthDp;
     }
 
     /**
@@ -565,8 +565,8 @@ public abstract class HoloBaseDialog extends HoloRootDialog implements View.OnCl
     protected void setTopLineParam(){
         if(isTopDividerBtnRes)lineBtnTopHor.setBackgroundResource(topDividerBtnResId);
         else lineBtnTopHor.setBackgroundColor(topDividerBtnColor);
-        if(topDividerBtnWidth > 0) {
-            int height = (int) getPX(topDividerBtnWidth);
+        if(topDividerBtnDepth > 0) {
+            int height = (int) getPX(topDividerBtnDepth);
             lineBtnTopHor.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height));
         }
     }
@@ -578,8 +578,8 @@ public abstract class HoloBaseDialog extends HoloRootDialog implements View.OnCl
         if(isLeftDividerBtnRes)lineBtnLeftVer.setBackgroundResource(leftDividerBtnResId);
         else lineBtnLeftVer.setBackgroundColor(leftDividerBtnColor);
         Log.d(Statical.TAG, "leftDividerBtnColor = " + leftDividerBtnColor);
-        if(leftDividerBtnWidth > 0) {
-            int width = (int) getPX(leftDividerBtnWidth);
+        if(leftDividerBtnDepth > 0) {
+            int width = (int) getPX(leftDividerBtnDepth);
             lineBtnLeftVer.setLayoutParams(new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT));
         }
     }
@@ -591,8 +591,8 @@ public abstract class HoloBaseDialog extends HoloRootDialog implements View.OnCl
         if(isRightDividerBtnRes)lineBtnRightVer.setBackgroundResource(rightDividerBtnResId);
         else lineBtnRightVer.setBackgroundColor(rightDividerBtnColor);
         Log.d(Statical.TAG, "rightDividerBtnColor = " + rightDividerBtnColor);
-        if(rightDividerBtnWidth > 0) {
-            int width = (int) getPX(rightDividerBtnWidth);
+        if(rightDividerBtnDepth > 0) {
+            int width = (int) getPX(rightDividerBtnDepth);
             lineBtnRightVer.setLayoutParams(new LinearLayout.LayoutParams(width, LinearLayout.LayoutParams.MATCH_PARENT));
         }
     }

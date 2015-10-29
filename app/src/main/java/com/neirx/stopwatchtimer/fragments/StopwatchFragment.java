@@ -46,6 +46,8 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
     int hoursTime;
     float secDegree, minDegree;
     private Vibrator vibrator;
+    private MediaPlayer startSound, stopSound, addLapSound, resetSound;
+
 
 
     public static StopwatchFragment newInstance() {
@@ -109,7 +111,11 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
 
         });
 
-        //final MediaPlayer mp = MediaPlayer.create(this, R.raw.soho);
+        startSound = MediaPlayer.create(getActivity(), R.raw.test_btn);
+        stopSound = MediaPlayer.create(getActivity(), R.raw.test_btn);
+        addLapSound = MediaPlayer.create(getActivity(), R.raw.test_btn);
+        resetSound = MediaPlayer.create(getActivity(), R.raw.test_btn);
+
 
         isStopwatchClickable = settings.getBoolPref(SettingPref.Bool.isDialClickable, true);
 
@@ -255,6 +261,7 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
                 }
             }
             if (lapsFragment != null) {
+                addLapSound.start();
                 lapsFragment.addLap(countStopwatchNum, countTimeNum, hoursTime, minutesTime, secondsTime, millisTime);
             }
         }
@@ -278,6 +285,7 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
         wasStopwatchStart = false;
         countTimeNum = 0;
         stopwatch.reset();
+        resetSound.start();
         resetTimeView();
         isStopwatchRunning = false;
         totalTime = 0;
@@ -320,6 +328,7 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
      */
     private void startCount() {
         stopwatch.start();
+        startSound.start();
         if (!wasStopwatchStart) wasStopwatchStart = true;
         baseTime = stopwatch.getBaseTime();
         settings.setPref(SettingPref.Bool.wasStopwatchStart, true);
@@ -333,6 +342,7 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
      */
     private void pauseCount() {
         stopwatch.stop();
+        stopSound.start();
         baseTime = -1;
         savedTime = stopwatch.getSavedTime();
         settings.setPref(SettingPref.Long.stopwatchBaseTime, baseTime);

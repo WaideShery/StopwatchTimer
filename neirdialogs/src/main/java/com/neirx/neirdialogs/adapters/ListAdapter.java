@@ -3,6 +3,7 @@ package com.neirx.neirdialogs.adapters;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.neirx.neirdialogs.enums.TextStyle;
 public class ListAdapter extends BaseAdapter {
     LayoutInflater lInflater;
     TextView textView;
+    private Context context;
     private String[] items;
     private int itemTextColor;
     private float itemTextSize;
@@ -29,6 +31,7 @@ public class ListAdapter extends BaseAdapter {
     protected int itemPaddingStart, itemPaddingTop, itemPaddingEnd, itemPaddingBottom;
 
     public ListAdapter(String[] items, Context context){
+        this.context = context;
         lInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.items = items;
     }
@@ -88,11 +91,22 @@ public class ListAdapter extends BaseAdapter {
         else if(itemTextStyle != null) textView.setTypeface(Typeface.DEFAULT, itemTextStyle.getValue());
 
         if(itemPaddingStart > -1) {
+            int start = (int) getPX(itemPaddingStart);
+            int top = (int) getPX(itemPaddingTop);
+            int end = (int) getPX(itemPaddingEnd);
+            int bottom = (int) getPX(itemPaddingBottom);
             if (Build.VERSION.SDK_INT >= 16) {
-                textView.setPaddingRelative(itemPaddingStart, itemPaddingTop, itemPaddingEnd, itemPaddingBottom);
+                textView.setPaddingRelative(start, top, end, bottom);
             } else {
-                textView.setPadding(itemPaddingStart, itemPaddingTop, itemPaddingEnd, itemPaddingBottom);
+                textView.setPadding(start, top, end, bottom);
             }
         }
+    }
+
+    /**
+     * Вычисление dp.
+     */
+    protected float getPX(float value){
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, context.getResources().getDisplayMetrics());
     }
 }

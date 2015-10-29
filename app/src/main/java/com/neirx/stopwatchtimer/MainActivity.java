@@ -7,6 +7,8 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
@@ -16,6 +18,10 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.neirx.neirdialogs.dialogs.HoloMessageDialog;
+import com.neirx.neirdialogs.interfaces.MessageDialog;
+import com.neirx.neirdialogs.interfaces.NeirDialogInterface;
 import com.neirx.stopwatchtimer.fragments.BottomMenuFragment;
 import com.neirx.stopwatchtimer.fragments.LapsFragment;
 import com.neirx.stopwatchtimer.fragments.StopwatchFragment;
@@ -26,7 +32,7 @@ import com.neirx.stopwatchtimer.settings.SettingPref;
 import com.neirx.stopwatchtimer.settings.SettingsManagement;
 
 
-public class MainActivity extends Activity implements ActionBar.OnNavigationListener {
+public class MainActivity extends Activity implements ActionBar.OnNavigationListener, NeirDialogInterface.OnClickListener {
     public static final String TAG = "ThisApp";
     private static final String CLASS_NAME = "<MainActivity> ";
     SettingsManagement settings;
@@ -38,7 +44,7 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
     protected PowerManager.WakeLock mWakeLock;
     private boolean keepScreenOn;
     PowerManager pm;
-
+    MediaPlayer clearLapsSound;
 
 
     @Override
@@ -100,8 +106,10 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
             bottomMenuFragment = (BottomMenuFragment) fragmentManager.getFragment(savedInstanceState, "bottomMenuFragment");
         }
 
+        clearLapsSound = MediaPlayer.create(this, R.raw.test_btn);
 
-
+        GA.tracker().setScreenName("MainActivity");
+        GA.tracker().send(new HitBuilders.EventBuilder("UI", "onCreate").build());
     }
 
     /**
@@ -194,7 +202,9 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
                 startActivity(new Intent(this, PreferencesActivity.class));
                 return true;
             case R.id.action_clear_laps:
-                getLapsFragment().clearLaps();
+                if(getLapsFragment().lapsNotEmpty()){
+                    showClearLapsDialog();
+                }
                 return true;
             case R.id.action_sound:
                 if (isSoundOn) {
@@ -210,6 +220,18 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showClearLapsDialog(){
+        Resources res = getResources();
+        CustomDialogFactory dialogFactory = CustomDialogFactory.newInstance(this);
+        MessageDialog clearLapsDialog = dialogFactory.createMessageDialog();
+        clearLapsDialog.setOnClickListener(this, "clearLapsDialog");
+        clearLapsDialog.setPositiveButton(res.getString(R.string.yes_btn));
+        clearLapsDialog.setNegativeButton(res.getString(R.string.cancel_btn));
+        clearLapsDialog.setMessage(res.getString(R.string.clear_laps_message));
+        clearLapsDialog.setTitle(res.getString(R.string.clear_laps));
+        clearLapsDialog.show(getFragmentManager(), "clearLapsDialog");
     }
 
     @Override
@@ -262,6 +284,20 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         Log.d(MainActivity.TAG, CLASS_NAME + "onDestroy");
     }
 
+    @Override
+    public void onClick(String tag, int buttonId, Object extraData) {
+        switch (buttonId){
+            case NeirDialogInterface.BUTTON_POSITIVE:
+                if(tag.equals("clearLapsDialog")){
+                    getLapsFragment().clearLaps();
+                    clearLapsSound.start();
+                }
+                break;
+            case NeirDialogInterface.BUTTON_NEGATIVE:
+                break;
+        }
+    }
+
     //-------------------- Методы жизненного цикла(BEGIN) --------------------
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
@@ -288,6 +324,8 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         super.onStop();
         Log.d(MainActivity.TAG, CLASS_NAME + "onStop");
     }
+
+
     /*@Override
     protected void onDestroy() {
         super.onDestroy();

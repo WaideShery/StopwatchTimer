@@ -16,14 +16,13 @@ import java.util.List;
  */
 public class SingleChoiceAdapter extends ChoiceAdapter {
     private LayoutInflater lInflater;
-    private Context context;
     private List<String> listItems;
     private int checkedItemPos;
 
     public SingleChoiceAdapter(List<String> listItems, int[] checkedItemsPos, Context context) {
         this.listItems = listItems;
         this.checkedItemPos = checkedItemsPos[0];
-        this.context = context;
+        super.context = context;
         lInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 

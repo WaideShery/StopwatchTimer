@@ -261,6 +261,12 @@ public class HoloDialogFactory implements DialogFactory {
         this.tvMessagePaddingEnd = endPaddingDp;
         this.tvMessagePaddingBottom = bottomPaddingDp;
     }
+    public void setMessagePadding(int padding) {
+        this.tvMessagePaddingStart = padding;
+        this.tvMessagePaddingTop = padding;
+        this.tvMessagePaddingEnd = padding;
+        this.tvMessagePaddingBottom = padding;
+    }
 
     /**
      * Ресурс селектора фона пунктов в ListDialog.
@@ -535,10 +541,10 @@ public class HoloDialogFactory implements DialogFactory {
         titleStyle = TextStyle.NORMAL;
         titleGravity = Gravity.START;
 
-        tvTitlePaddingStart = 20;
-        tvTitlePaddingTop = 20;
-        tvTitlePaddingEnd = 20;
-        tvTitlePaddingBottom = 20;
+        tvTitlePaddingStart = 10;
+        tvTitlePaddingTop = 10;
+        tvTitlePaddingEnd = 10;
+        tvTitlePaddingBottom = 10;
 
         isDividerTitleRes = false;
         dividerTitleColor = context.getResources().getColor(R.color.holo_title_divider);
@@ -582,10 +588,10 @@ public class HoloDialogFactory implements DialogFactory {
 
         listItemTextGravity = -1;
 
-        tvListItemPaddingStart = 24;
-        tvListItemPaddingTop = 24;
-        tvListItemPaddingEnd = 24;
-        tvListItemPaddingBottom = 24;
+        tvListItemPaddingStart = 12;
+        tvListItemPaddingTop = 12;
+        tvListItemPaddingEnd = 12;
+        tvListItemPaddingBottom = 12;
 
         isListDividerDrawable = false;
         listDividerColorId = context.getResources().getColor(R.color.holo_list_divider);
@@ -603,10 +609,10 @@ public class HoloDialogFactory implements DialogFactory {
 
         sChoiceItemTextGravity = -1;
 
-        tvSChoiceItemPaddingStart = 18;
-        tvSChoiceItemPaddingTop = 18;
-        tvSChoiceItemPaddingEnd = 18;
-        tvSChoiceItemPaddingBottom = 18;
+        tvSChoiceItemPaddingStart = 12;
+        tvSChoiceItemPaddingTop = 12;
+        tvSChoiceItemPaddingEnd = 12;
+        tvSChoiceItemPaddingBottom = 12;
 
         isSChoiceDividerDrawable = false;
         sChoiceDividerColorId = context.getResources().getColor(R.color.holo_list_divider);
@@ -624,10 +630,10 @@ public class HoloDialogFactory implements DialogFactory {
 
         mChoiceItemTextGravity = Gravity.CENTER_VERTICAL;
 
-        tvMChoiceItemPaddingStart = 18;
-        tvMChoiceItemPaddingTop = 18;
-        tvMChoiceItemPaddingEnd = 18;
-        tvMChoiceItemPaddingBottom = 18;
+        tvMChoiceItemPaddingStart = 12;
+        tvMChoiceItemPaddingTop = 12;
+        tvMChoiceItemPaddingEnd = 12;
+        tvMChoiceItemPaddingBottom = 12;
 
         isMChoiceDividerDrawable = false;
         mChoiceDividerColorId = context.getResources().getColor(R.color.holo_list_divider);
@@ -783,7 +789,7 @@ public class HoloDialogFactory implements DialogFactory {
         } else {
             dialog.setDividerTitleColor(dividerTitleColor);
         }
-        dialog.setDividerTitleWidth(dividerTitleWidth);
+        dialog.setDividerTitleDepth(dividerTitleWidth);
     }
 
     /**
@@ -812,9 +818,9 @@ public class HoloDialogFactory implements DialogFactory {
             dialog.setLeftDividerBtnColor(dividerBtnVerticalColor);
             dialog.setRightDividerBtnColor(dividerBtnVerticalColor);
         }
-        dialog.setTopDividerBtnWidth(dividerBtnHorizontalWidth);
-        dialog.setLeftDividerBtnWidth(dividerBtnVerticalWidth);
-        dialog.setRightDividerBtnWidth(dividerBtnVerticalWidth);
+        dialog.setTopDividerBtnDepth(dividerBtnHorizontalWidth);
+        dialog.setLeftDividerBtnDepth(dividerBtnVerticalWidth);
+        dialog.setRightDividerBtnDepth(dividerBtnVerticalWidth);
     }
 }
 

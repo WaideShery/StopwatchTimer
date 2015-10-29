@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,10 @@ import com.neirx.neirdialogs.interfaces.NeirDialogInterface;
 
 
 public class HoloMessageDialog extends HoloBaseDialog implements MessageDialog {
+    public TextView getTvMessage() {
+        return tvMessage;
+    }
+
     protected TextView tvMessage;
     protected ScrollView svMessage;
     protected String message;
@@ -115,7 +120,6 @@ public class HoloMessageDialog extends HoloBaseDialog implements MessageDialog {
         checkTitle();
         checkButtons();
         checkMessage();
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view);
         // Create the AlertDialog object and return it
@@ -162,12 +166,16 @@ public class HoloMessageDialog extends HoloBaseDialog implements MessageDialog {
         else if(messageStyle != null) tvMessage.setTypeface(Typeface.DEFAULT, messageStyle.getValue());
 
         if(messageGravity > -1) tvMessage.setGravity(messageGravity);
-
+        Log.d("ThisApp", "<MainActivity>  before messagePaddingStart = "+messagePaddingStart);
         if(messagePaddingStart > -1) {
+            int start = (int) getPX(messagePaddingStart);
+            int top = (int) getPX(messagePaddingTop);
+            int end = (int) getPX(messagePaddingEnd);
+            int bottom = (int) getPX(messagePaddingBottom);
             if (Build.VERSION.SDK_INT >= 16) {
-                tvMessage.setPaddingRelative(tvTitlePaddingStart, tvTitlePaddingTop, tvTitlePaddingEnd, tvTitlePaddingBottom);
+                tvMessage.setPaddingRelative(start, top, end, bottom);
             } else {
-                tvMessage.setPadding(tvTitlePaddingStart, tvTitlePaddingTop, tvTitlePaddingEnd, tvTitlePaddingBottom);
+                tvMessage.setPadding(start, top, end, bottom);
             }
         }
     }

@@ -68,6 +68,10 @@ public class LapsFragment extends Fragment {
         scrollListViewToBottom();
     }
 
+    public boolean lapsNotEmpty(){
+        return lapAdapter.getCount() > 0;
+    }
+
     public void addLap(int stopwatchNum, int timeNum, int hours, int minutes, int seconds, int millis){
         if(this.stopwatchNum != stopwatchNum || wasClear) {
             this.hours=this.minutes=this.seconds=this.millis=0;

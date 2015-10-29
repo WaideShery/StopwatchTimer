@@ -17,8 +17,6 @@ import java.util.List;
  */
 public class MultiChoiceAdapter extends ChoiceAdapter {
     private LayoutInflater lInflater;
-    private Context context;
-    //private CheckBox checkBox;
     private List<String> listItems;
     List<Integer> listCheckedItemsPos;
 
@@ -35,7 +33,7 @@ public class MultiChoiceAdapter extends ChoiceAdapter {
         if (checkedItemsPos != null) {
             addToCheckedList(checkedItemsPos);
         }
-        this.context = context;
+        super.context = context;
         lInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 

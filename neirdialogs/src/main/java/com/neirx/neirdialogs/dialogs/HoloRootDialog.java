@@ -61,7 +61,7 @@ public abstract class HoloRootDialog extends DialogFragment {
     protected boolean isDividerTitleRes = false;
     protected @DrawableRes int dividerTitleResId;
     protected int dividerTitleColor;
-    protected float dividerTitleWidth = 0;
+    protected float dividerTitleDepth = 0;
 
     //Идентификатор диалогового окна
     protected String tag;
@@ -233,8 +233,8 @@ public abstract class HoloRootDialog extends DialogFragment {
      *
      * @param dpWidth высота в dp
      */
-    public void setDividerTitleWidth(float dpWidth) {
-        dividerTitleWidth = dpWidth;
+    public void setDividerTitleDepth(float dpWidth) {
+        dividerTitleDepth = dpWidth;
     }
 
     /**
@@ -271,10 +271,14 @@ public abstract class HoloRootDialog extends DialogFragment {
         }
 
         if(tvTitlePaddingStart > -1) {
+            int start = (int) getPX(tvTitlePaddingStart);
+            int top = (int) getPX(tvTitlePaddingTop);
+            int end = (int) getPX(tvTitlePaddingEnd);
+            int bottom = (int) getPX(tvTitlePaddingBottom);
             if (Build.VERSION.SDK_INT >= 16) {
-                tvTitle.setPaddingRelative(tvTitlePaddingStart, tvTitlePaddingTop, tvTitlePaddingEnd, tvTitlePaddingBottom);
+                tvTitle.setPaddingRelative(start, top, end, bottom);
             } else {
-                tvTitle.setPadding(tvTitlePaddingStart, tvTitlePaddingTop, tvTitlePaddingEnd, tvTitlePaddingBottom);
+                tvTitle.setPadding(start, top, end, bottom);
             }
         }
         if(Build.VERSION.SDK_INT >= 17) {
@@ -288,9 +292,9 @@ public abstract class HoloRootDialog extends DialogFragment {
         if (isDividerTitleRes) dividerTitle.setBackgroundResource(dividerTitleResId);
         else dividerTitle.setBackgroundColor(dividerTitleColor);
 
-        if(dividerTitleWidth > 0) {
-            int height = (int) getPX(dividerTitleWidth);
-            dividerTitle.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height));
+        if(dividerTitleDepth > 0) {
+            int width = (int) getPX(dividerTitleDepth);
+            dividerTitle.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, width));
         }
 
     }

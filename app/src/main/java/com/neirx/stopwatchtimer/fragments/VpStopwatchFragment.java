@@ -49,6 +49,9 @@ public class VpStopwatchFragment extends Fragment implements ViewPager.OnPageCha
         if(savedInstanceState != null){
             stopwatchFragment = (StopwatchFragment) fragmentManager.getFragment(savedInstanceState, "stopwatchFragment");
             lapsFragment = (LapsFragment) fragmentManager.getFragment(savedInstanceState, "lapsFragment");
+        } else {
+            stopwatchFragment = StopwatchFragment.newInstance();
+            lapsFragment = LapsFragment.newInstance();
         }
 
         // Создание адаптера, который будет возвращать фрагмент для каждой из
