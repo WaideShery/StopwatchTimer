@@ -3,6 +3,7 @@ package com.neirx.stopwatchtimer.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,6 +46,7 @@ public class BottomMenuFragment extends Fragment implements View.OnClickListener
         btnNewLap.setOnClickListener(this);
         btnStopwatchStartStop = (Button) rootView.findViewById(R.id.btnStopwatchStartStop);
         btnStopwatchStartStop.setOnClickListener(this);
+
 
         //определение, запущен ли в данный момент секундомер
         if(savedInstanceState != null){

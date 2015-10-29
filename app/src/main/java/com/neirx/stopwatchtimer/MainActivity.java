@@ -15,11 +15,8 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.SpinnerAdapter;
 
 import com.google.android.gms.analytics.HitBuilders;
-import com.neirx.neirdialogs.dialogs.HoloMessageDialog;
 import com.neirx.neirdialogs.interfaces.MessageDialog;
 import com.neirx.neirdialogs.interfaces.NeirDialogInterface;
 import com.neirx.stopwatchtimer.fragments.BottomMenuFragment;
@@ -30,6 +27,8 @@ import com.neirx.stopwatchtimer.fragments.VpStopwatchFragment;
 import com.neirx.stopwatchtimer.settings.AppSettings;
 import com.neirx.stopwatchtimer.settings.SettingPref;
 import com.neirx.stopwatchtimer.settings.SettingsManagement;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class MainActivity extends Activity implements ActionBar.OnNavigationListener, NeirDialogInterface.OnClickListener {
@@ -42,16 +41,30 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
     VpStopwatchFragment vpStopwatchFragment;
     BottomMenuFragment bottomMenuFragment;
     protected PowerManager.WakeLock mWakeLock;
-    private boolean keepScreenOn;
     PowerManager pm;
     MediaPlayer clearLapsSound;
+    Set<SoundStateListener> soundStateListeners;
+    private boolean didKeepBright, isRunNow;
 
+    public void setSoundStateListener(SoundStateListener listener){
+        if(soundStateListeners == null){
+            soundStateListeners = new HashSet<>();
+        }
+        soundStateListeners.add(listener);
+    }
+
+    public interface SoundStateListener{
+        void onChangeState(boolean state);
+    }
+    public boolean isSoundOn() {
+        return isSoundOn;
+    }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         //Save the fragment's instance
-        outState.putBoolean("keepScreenOn", keepScreenOn);
+        outState.putBoolean("isRunNow", isRunNow);
         fragmentManager.putFragment(outState, "vpStopwatchFragment", vpStopwatchFragment);
         fragmentManager.putFragment(outState, "bottomMenuFragment", bottomMenuFragment);
     }
@@ -62,6 +75,7 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         Log.d(MainActivity.TAG, CLASS_NAME + "onStart");
         screenOrientation = settings.getIntPref(SettingPref.Int.screenOrientation, Statical.SCREEN_ORIENTATION_SYSTEM);
         switchScreenOrientation(screenOrientation);
+        checkWakeLock();
     }
 
     @Override
@@ -93,6 +107,7 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
 
         //vpStopwatchFragment = VpStopwatchFragment.newInstance();
         if(savedInstanceState == null) {
+            isRunNow = settings.getBoolPref(SettingPref.Bool.isStopwatchRun);
             vpStopwatchFragment = VpStopwatchFragment.newInstance();
             bottomMenuFragment = BottomMenuFragment.newInstance();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -101,7 +116,7 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
             //toBackStack(fragmentTransaction);
             fragmentTransaction.commit();
         } else {
-            keepScreenOn = savedInstanceState.getBoolean("keepScreenOn", false);
+            isRunNow = savedInstanceState.getBoolean("isRunNow", false);
             vpStopwatchFragment = (VpStopwatchFragment) fragmentManager.getFragment(savedInstanceState, "vpStopwatchFragment");
             bottomMenuFragment = (BottomMenuFragment) fragmentManager.getFragment(savedInstanceState, "bottomMenuFragment");
         }
@@ -141,22 +156,35 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         if(bottomMenuFragment != null){
             bottomMenuFragment.clickedStopwatch(isRun);
         }
-        boolean isNotTurnOffScreen = settings.getBoolPref(SettingPref.Bool.isNotTurnOffScreen, false);
-        if (isNotTurnOffScreen) {
-            keepScreenOn = isRun;
-            wakeLock();
-        }
-
+        isRunNow = isRun;
+        checkWakeLock();
     }
 
-    public void wakeLock(){
-        Log.d(MainActivity.TAG, CLASS_NAME + "keepScreenOn = "+keepScreenOn);
-        if(keepScreenOn){
-            this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, "ScreeOnTag");
-            this.mWakeLock.acquire();
-        } else if(mWakeLock != null) {
-            mWakeLock.release();
-            mWakeLock = null;
+    private void checkWakeLock(){
+        if(isRunNow){
+            boolean isNotTurnOffScreen = settings.getBoolPref(SettingPref.Bool.isNotTurnOffScreen, false);
+            wakeLock(isNotTurnOffScreen);
+        } else if (mWakeLock != null) {
+            try {mWakeLock.release();} catch (Throwable th){}
+        }
+    }
+
+
+    public void wakeLock(boolean keepBright){
+        if(keepBright){
+            if(mWakeLock == null || !didKeepBright){
+                if(mWakeLock != null) try{ mWakeLock.release();} catch (Throwable th){}
+                mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, "ScreeOnTag");
+            }
+            mWakeLock.acquire();
+            didKeepBright = true;
+        } else {
+            if(mWakeLock == null || !didKeepBright) {
+                if(mWakeLock != null)  try{mWakeLock.release();} catch (Throwable th){}
+                mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, "ScreeOnTag");
+            }
+            mWakeLock.acquire();
+            didKeepBright = false;
         }
     }
 
@@ -216,6 +244,9 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
                     isSoundOn = true;
                     settings.setPref(SettingPref.Bool.soundState, true);
                 }
+                for (SoundStateListener listener : soundStateListeners){
+                    if(listener != null) listener.onChangeState(isSoundOn);
+                }
                 return true;
         }
 
@@ -270,14 +301,13 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
     @Override
     protected void onResume() {
         super.onResume();
-        wakeLock();
         Log.d(MainActivity.TAG, CLASS_NAME + "onResume");
     }
 
     @Override
     protected void onDestroy() {
         if(mWakeLock != null) {
-            mWakeLock.release();
+            try{mWakeLock.release();} catch (Throwable th){}
             mWakeLock = null;
         }
         super.onDestroy();
@@ -290,7 +320,7 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
             case NeirDialogInterface.BUTTON_POSITIVE:
                 if(tag.equals("clearLapsDialog")){
                     getLapsFragment().clearLaps();
-                    clearLapsSound.start();
+                    if(isSoundOn) clearLapsSound.start();
                 }
                 break;
             case NeirDialogInterface.BUTTON_NEGATIVE:

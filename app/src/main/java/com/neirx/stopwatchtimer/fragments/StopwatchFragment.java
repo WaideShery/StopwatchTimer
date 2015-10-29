@@ -37,7 +37,8 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
     Stopwatch stopwatch;
     LapsFragment lapsFragment;
     MainActivity activity;
-    boolean isStopwatchRunning, wasStopwatchStart, isStopwatchClickable, incrStopwatchNum, needStartCount;
+    boolean isStopwatchRunning, wasStopwatchStart, isStopwatchClickable, incrStopwatchNum, needStartCount,
+            isSoundOn;
     long totalTime, baseTime, savedTime;
     int countTimeNum, countStopwatchNum;
     int secondsTime;
@@ -111,13 +112,17 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
 
         });
 
+        isSoundOn = ((MainActivity) getActivity()).isSoundOn();
+        ((MainActivity) getActivity()).setSoundStateListener(new MainActivity.SoundStateListener() {
+            @Override
+            public void onChangeState(boolean state) {
+                isSoundOn = state;
+            }
+        });
         startSound = MediaPlayer.create(getActivity(), R.raw.test_btn);
         stopSound = MediaPlayer.create(getActivity(), R.raw.test_btn);
         addLapSound = MediaPlayer.create(getActivity(), R.raw.test_btn);
         resetSound = MediaPlayer.create(getActivity(), R.raw.test_btn);
-
-
-        isStopwatchClickable = settings.getBoolPref(SettingPref.Bool.isDialClickable, true);
 
         stopwatch = new Stopwatch(this);
 
@@ -179,6 +184,13 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
         Log.d(MainActivity.TAG, CLASS_NAME + "countStopwatchNum = " + countStopwatchNum);
         needStartCount = false;
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(MainActivity.TAG, CLASS_NAME + "onStart");
+        isStopwatchClickable = settings.getBoolPref(SettingPref.Bool.isDialClickable, true);
     }
 
     @Override
@@ -261,7 +273,7 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
                 }
             }
             if (lapsFragment != null) {
-                addLapSound.start();
+                if(isSoundOn) addLapSound.start();
                 lapsFragment.addLap(countStopwatchNum, countTimeNum, hoursTime, minutesTime, secondsTime, millisTime);
             }
         }
@@ -285,7 +297,7 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
         wasStopwatchStart = false;
         countTimeNum = 0;
         stopwatch.reset();
-        resetSound.start();
+        if(isSoundOn) resetSound.start();
         resetTimeView();
         isStopwatchRunning = false;
         totalTime = 0;
@@ -314,10 +326,12 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
             isStopwatchRunning = true;
             startEffect();
             startCount();
+            if(isSoundOn) startSound.start();
         } else {
             isStopwatchRunning = false;
             stopEffect();
             pauseCount();
+            if(isSoundOn) stopSound.start();
         }
         activity.clickedStopwatch(isStopwatchRunning);
     }
@@ -328,7 +342,6 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
      */
     private void startCount() {
         stopwatch.start();
-        startSound.start();
         if (!wasStopwatchStart) wasStopwatchStart = true;
         baseTime = stopwatch.getBaseTime();
         settings.setPref(SettingPref.Bool.wasStopwatchStart, true);
@@ -342,7 +355,6 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
      */
     private void pauseCount() {
         stopwatch.stop();
-        stopSound.start();
         baseTime = -1;
         savedTime = stopwatch.getSavedTime();
         settings.setPref(SettingPref.Long.stopwatchBaseTime, baseTime);
@@ -517,13 +529,15 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
         Log.d(MainActivity.TAG, CLASS_NAME + "onActivityCreated");
     }
 
+    /*
     @Override
     public void onStart() {
         super.onStart();
         Log.d(MainActivity.TAG, CLASS_NAME + "onStart");
+        isStopwatchClickable = settings.getBoolPref(SettingPref.Bool.isDialClickable, true);
     }
 
-    /*@Override
+    @Override
     public void onResume() {
         super.onResume();
         Log.d(MainActivity.TAG, CLASS_NAME + "onResume");

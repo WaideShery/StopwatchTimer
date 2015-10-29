@@ -24,16 +24,27 @@ public class LapsFragment extends Fragment {
     static LapAdapter lapAdapter;//адаптер для создания view
     DBHelper dbHelper; //создание объкта для работы с базой данных
     ListView listView;
-    int stopwatchNum = 1;
-    int lastStopwatchNum = 0;
-    int hours =0;
-    int minutes = 0;
-    int seconds = 0;
-    int millis = 0;
+    private int stopwatchNum = 1;
+    private int lastStopwatchNum = 0;
+    private int hours =0;
+    private int minutes = 0;
+    private int seconds = 0;
+    private int millis = 0;
     private boolean wasClear;
 
     public static LapsFragment newInstance() {
         return new LapsFragment();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("hours", hours);
+        outState.putInt("minutes", minutes);
+        outState.putInt("seconds", seconds);
+        outState.putInt("minutes", minutes);
+        outState.putInt("stopwatchNum", stopwatchNum);
+        outState.putBoolean("wasClear", wasClear);
     }
 
     @Override
@@ -42,6 +53,15 @@ public class LapsFragment extends Fragment {
         dbHelper = new DBHelper(getActivity());
         laps = dbHelper.getLaps();
         lapAdapter = new LapAdapter(getActivity(), laps);
+
+        if(savedInstanceState != null){
+            hours = savedInstanceState.getInt("hours", 0);
+            minutes = savedInstanceState.getInt("minutes", 0);
+            seconds = savedInstanceState.getInt("seconds", 0);
+            millis = savedInstanceState.getInt("millis", 0);
+            stopwatchNum = savedInstanceState.getInt("stopwatchNum", 1);
+            wasClear = savedInstanceState.getBoolean("wasClear", false);
+        }
 
         listView = (ListView) rootView.findViewById(R.id.lvLaps);
         listView.setAdapter(lapAdapter);

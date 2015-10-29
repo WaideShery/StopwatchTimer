@@ -19,7 +19,8 @@
     <string name="pref_screen">Экран</string>
     <string name="pref_control">Управление</string>
     <string name="pref_sound">Звуки</string>
-    <string name="pref_screenStatus">Держать экран включенным</string>
+    <string name="pref_screenStatus">Не затемнять экран</string>
+    <string name="pref_screenStatus_summ">Во время работы яркость экрана не уменьшается</string>
     <string name="pref_keySoundStatus">Звук кнопок</string>
     <string name="pref_keySoundStatus_summ">Звуковое совпровождение при нажатии на кнопки</string>
     <string name="pref_vibrateStatus">Виброотклик</string>
@@ -30,7 +31,6 @@
     <string name="pref_customSoundTimer_summ">Установить свою мелодию окончания таймера</string>
     <string name="pref_selectMelody">Выбор мелодии</string>
     <string name="pref_dialClickable">Нажатие на циферблат</string>
-    <string name="pref_screenStatus_summ">Не выключать экран во время работы</string>
     <string name="pref_dialClickable_summ">Управление секундомером с помощью нажатия на циферблат</string>
     <string name="pref_screenOrientation">Ориентация экрана</string>
 
