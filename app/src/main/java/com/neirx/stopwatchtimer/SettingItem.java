@@ -15,6 +15,8 @@ public class SettingItem {
     private SettingsManagement.BoolPref key;
     private RootDialog dialog = null;
 
+    private boolean disable;
+
     public RootDialog getDialog() {
         return dialog;
     }
@@ -53,6 +55,14 @@ public class SettingItem {
 
     public void setChecked(boolean checked){
         isChecked = checked;
+    }
+
+    public boolean isDisable() {
+        return disable;
+    }
+
+    public void setDisable(boolean disable) {
+        this.disable = disable;
     }
 
     public SettingItem(String title) {

@@ -1,7 +1,7 @@
 <resources>
     <!--string name="app_name">Stopwatch &amp; Timer</string-->
     <string name="app_name">Секундомер</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="stopwatch">Секундомер</string>
     <string name="action_settings">Настройки</string>
     <string name="sound_state">Sound</string>
     <string name="ok_btn">Ок</string>
@@ -32,6 +32,8 @@
     <string name="pref_selectMelody">Выбор мелодии</string>
     <string name="pref_dialClickable">Нажатие на циферблат</string>
     <string name="pref_dialClickable_summ">Управление секундомером с помощью нажатия на циферблат</string>
+    <string name="pref_twiceDialClick">Стоп двойным нажатием</string>
+    <string name="pref_twiceDialClick_summ">Остановка секундомера двойным нажатием на циферблат</string>
     <string name="pref_screenOrientation">Ориентация экрана</string>
 
 

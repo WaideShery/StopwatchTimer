@@ -30,26 +30,28 @@ import java.util.TimerTask;
 
 public class StopwatchFragment extends Fragment implements View.OnClickListener, Stopwatch.OnTickListener {
     private static final String CLASS_NAME = "<StopwatchFragment> ";
-    SettingsManagement settings;
-    ImageView ivSecondHand, ivMinuteHand;
-    ImageView ivDial;
-    TextView tvHours, tvMinutes, tvSeconds, tvMillis;
-    Stopwatch stopwatch;
-    LapsFragment lapsFragment;
-    MainActivity activity;
-    boolean isStopwatchRunning, wasStopwatchStart, isStopwatchClickable, incrStopwatchNum, needStartCount,
+    private SettingsManagement settings;
+    private ImageView ivSecondHand, ivMinuteHand;
+    private ImageView ivDial;
+    private TextView tvHours, tvMinutes, tvSeconds, tvMillis;
+    private Stopwatch stopwatch;
+    private LapsFragment lapsFragment;
+    private MainActivity activity;
+    private boolean isStopwatchRunning, wasStopwatchStart, isStopwatchClickable, incrStopwatchNum, needStartCount,
             isSoundOn;
-    long totalTime, baseTime, savedTime;
-    int countTimeNum, countStopwatchNum;
-    int secondsTime;
-    int millisTime;
-    int minutesTime;
-    int hoursTime;
-    float secDegree, minDegree;
+    private long totalTime, baseTime, savedTime;
+    private int countTimeNum, countStopwatchNum;
+    private int secondsTime;
+    private int millisTime;
+    private int minutesTime;
+    private int hoursTime;
+    private float secDegree, minDegree;
     private Vibrator vibrator;
     private MediaPlayer startSound, stopSound, addLapSound, resetSound;
 
-
+    public long getTotalTime(){
+        return totalTime;
+    }
 
     public static StopwatchFragment newInstance() {
         return new StopwatchFragment();
@@ -119,10 +121,10 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
                 isSoundOn = state;
             }
         });
-        startSound = MediaPlayer.create(getActivity(), R.raw.test_btn);
-        stopSound = MediaPlayer.create(getActivity(), R.raw.test_btn);
-        addLapSound = MediaPlayer.create(getActivity(), R.raw.test_btn);
-        resetSound = MediaPlayer.create(getActivity(), R.raw.test_btn);
+        startSound = MediaPlayer.create(getActivity(), R.raw.sw_start_btn);
+        stopSound = MediaPlayer.create(getActivity(), R.raw.sw_stop_btn);
+        addLapSound = MediaPlayer.create(getActivity(), R.raw.sw_addlap_btn);
+        resetSound = MediaPlayer.create(getActivity(), R.raw.sw_reset_btn);
 
         stopwatch = new Stopwatch(this);
 

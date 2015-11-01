@@ -66,6 +66,13 @@ public abstract class HoloRootDialog extends DialogFragment {
     //Идентификатор диалогового окна
     protected String tag;
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        // this is really important in order to save the state across screen
+        // configuration changes for example
+        setRetainInstance(true);
+    }
 
     /**
      * Абстрактный метод, в котором нужно установить layout с соответствующим диалоговым окном.
@@ -298,7 +305,12 @@ public abstract class HoloRootDialog extends DialogFragment {
         }
 
     }
-
+    @Override
+    public void onDestroyView() {
+        if (getDialog() != null && getRetainInstance())
+            getDialog().setDismissMessage(null);
+        super.onDestroyView();
+    }
     /**
      * Вычисление dp.
      */

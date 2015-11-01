@@ -44,6 +44,7 @@ public class SettingsFragmentTest extends Fragment implements NeirDialogInterfac
     String titleScreenOrientation;
     String titleControl;
     String titleDialClickable;
+    String titleTwiceDialClick;
     String titleVibrateStatus;
     String titleSound;
     String titleKeySoundStatus;
@@ -54,6 +55,7 @@ public class SettingsFragmentTest extends Fragment implements NeirDialogInterfac
     String sumScreenStatus;
     String sumScreenOrientation;
     String sumDialClickable;
+    String sumTwiceDialClick;
     String sumVibrateStatus;
     String sumKeySoundStatus;
     String sumTimerLongAlarm;
@@ -78,9 +80,9 @@ public class SettingsFragmentTest extends Fragment implements NeirDialogInterfac
         mAdapter.addSectionHeaderItem(new SettingItem(titleScreen));
 
         //Настройка "Не выключать экран"
-        isChecked = settings.getBoolPref(SettingPref.Bool.isNotTurnOffScreen);
+        isChecked = settings.getBoolPref(SettingPref.Bool.isNotScreenDim);
         SettingItem screenStatusItem = new SettingItem(titleScreenStatus, sumScreenStatus, isChecked);
-        screenStatusItem.setKey(SettingPref.Bool.isNotTurnOffScreen);
+        screenStatusItem.setKey(SettingPref.Bool.isNotScreenDim);
         mAdapter.addItem(screenStatusItem);
 
         //Настройка "ориентация экрана"
@@ -103,8 +105,16 @@ public class SettingsFragmentTest extends Fragment implements NeirDialogInterfac
 
         //Настройка "Нажатие на циферблат"
         isChecked = settings.getBoolPref(SettingPref.Bool.isDialClickable);
+        boolean dependenceDialClickable = isChecked;
         settingItem = new SettingItem(titleDialClickable, sumDialClickable, isChecked);
         settingItem.setKey(SettingPref.Bool.isDialClickable);
+        mAdapter.addItem(settingItem);
+
+        //Настройка "Стоп двойным нажатием"
+        isChecked = settings.getBoolPref(SettingPref.Bool.twiceDialClick);
+        settingItem = new SettingItem(titleTwiceDialClick, sumTwiceDialClick, isChecked);
+        settingItem.setKey(SettingPref.Bool.twiceDialClick);
+        settingItem.setDisable(!dependenceDialClickable);
         mAdapter.addItem(settingItem);
 
         //Настройка "Вибрация"
@@ -189,6 +199,7 @@ public class SettingsFragmentTest extends Fragment implements NeirDialogInterfac
         titleScreenOrientation = getString(R.string.pref_screenOrientation);
         titleControl = getString(R.string.pref_control);
         titleDialClickable = getString(R.string.pref_dialClickable);
+        titleTwiceDialClick = getString(R.string.pref_twiceDialClick);
         titleVibrateStatus = getString(R.string.pref_vibrateStatus);
         titleSound = getString(R.string.pref_sound);
         titleKeySoundStatus = getString(R.string.pref_keySoundStatus);
@@ -198,6 +209,7 @@ public class SettingsFragmentTest extends Fragment implements NeirDialogInterfac
 
         sumScreenStatus = getString(R.string.pref_screenStatus_summ);
         sumDialClickable = getString(R.string.pref_dialClickable_summ);
+        sumTwiceDialClick = getString(R.string.pref_twiceDialClick_summ);
         sumVibrateStatus = getString(R.string.pref_vibrateStatus_summ);
         sumKeySoundStatus = getString(R.string.pref_keySoundStatus_summ);
         sumTimerLongAlarm = getString(R.string.pref_timerLongAlarm_summ);

@@ -28,7 +28,9 @@
     <item name="setting_divider_group" type="color">#ff6d7172</item>
     <item name="setting_divider_pref" type="color">#ff7a9296</item>
     <item name="setting_text_summary" type="color">#ff3b3f40</item>
+    <item name="setting_disable_text_summary" type="color">#8c9091</item>
     <item name="setting_text_title" type="color">#ffcdd4d5</item>
+    <item name="setting_disable_text_title" type="color">#848b8c</item>
     <item name="chb_bg_selectable" type="color">#ff7a969a</item>
 
 

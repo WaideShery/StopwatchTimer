@@ -51,7 +51,7 @@ public class SettingsFragment extends Fragment {
         checkCustomSoundTimer = (CheckBox) rootView.findViewById(R.id.check_customSoundTimer);
 
         //Установка состояний CheckBox-элементов
-        checkScreenStatus.setChecked(settings.getBoolPref(SettingPref.Bool.isNotTurnOffScreen));
+        checkScreenStatus.setChecked(settings.getBoolPref(SettingPref.Bool.isNotScreenDim));
         checkDialClickable.setChecked(settings.getBoolPref(SettingPref.Bool.isDialClickable));
         checkVibrateStatus.setChecked(settings.getBoolPref(SettingPref.Bool.vibrateState));
         checkKeySoundStatus.setChecked(settings.getBoolPref(SettingPref.Bool.keySoundState));
@@ -146,7 +146,7 @@ public class SettingsFragment extends Fragment {
         public void doAction(View v, boolean value) {
             switch (v.getId()) {
                 case R.id.lay_screenStatus:
-                    settings.setPref(SettingPref.Bool.isNotTurnOffScreen, value);
+                    settings.setPref(SettingPref.Bool.isNotScreenDim, value);
                     break;
                 case R.id.lay_dialClickable:
                     settings.setPref(SettingPref.Bool.isDialClickable, value);

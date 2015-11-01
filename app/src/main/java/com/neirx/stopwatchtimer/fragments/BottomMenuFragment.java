@@ -90,6 +90,7 @@ public class BottomMenuFragment extends Fragment implements View.OnClickListener
                 isStopwatchRun = false;
                 convertStartStop();
                 stopwatchFragment.stopwatchReset();
+                activity.switchStopwatch(isStopwatchRun);
                 break;
             case R.id.btnNewLap:
                 stopwatchFragment.addNewLap();
@@ -98,6 +99,7 @@ public class BottomMenuFragment extends Fragment implements View.OnClickListener
                 isStopwatchRun = !isStopwatchRun;
                 convertStartStop();
                 stopwatchFragment.switchStopwatch();
+                activity.switchStopwatch(isStopwatchRun);
                 break;
         }
     }

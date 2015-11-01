@@ -25,6 +25,8 @@ public class VpStopwatchFragment extends Fragment implements ViewPager.OnPageCha
     ViewPager mViewPager;
     private static StopwatchFragment stopwatchFragment;
     private static LapsFragment lapsFragment;
+    private String savedStopwatchFragment = "savedStopwatchFragment";
+    private String savedLapsFragment = "savedLapsFragment";
     MainActivity activity;
 
     public static VpStopwatchFragment newInstance() {
@@ -35,8 +37,14 @@ public class VpStopwatchFragment extends Fragment implements ViewPager.OnPageCha
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         //Save the fragment's state here
-        fragmentManager.putFragment(outState, "stopwatchFragment", stopwatchFragment);
-        fragmentManager.putFragment(outState, "lapsFragment", lapsFragment);
+        if(stopwatchFragment.isAdded()) {
+            fragmentManager.putFragment(outState, "stopwatchFragment", stopwatchFragment);
+            outState.putBoolean(savedStopwatchFragment, true);
+        }
+        if(lapsFragment.isAdded()) {
+            fragmentManager.putFragment(outState, "lapsFragment", lapsFragment);
+            outState.putBoolean(savedLapsFragment, true);
+        }
     }
 
 
@@ -47,8 +55,14 @@ public class VpStopwatchFragment extends Fragment implements ViewPager.OnPageCha
 
         fragmentManager = getChildFragmentManager();
         if(savedInstanceState != null){
-            stopwatchFragment = (StopwatchFragment) fragmentManager.getFragment(savedInstanceState, "stopwatchFragment");
-            lapsFragment = (LapsFragment) fragmentManager.getFragment(savedInstanceState, "lapsFragment");
+            if(savedInstanceState.getBoolean(savedStopwatchFragment, false)) {
+                stopwatchFragment = (StopwatchFragment) fragmentManager
+                        .getFragment(savedInstanceState, "stopwatchFragment");
+            }
+            if(savedInstanceState.getBoolean(savedLapsFragment, false)) {
+                lapsFragment = (LapsFragment) fragmentManager
+                        .getFragment(savedInstanceState, "lapsFragment");
+            }
         } else {
             stopwatchFragment = StopwatchFragment.newInstance();
             lapsFragment = LapsFragment.newInstance();

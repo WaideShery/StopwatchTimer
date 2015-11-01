@@ -4,6 +4,10 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -16,6 +20,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.neirx.neirdialogs.interfaces.MessageDialog;
 import com.neirx.neirdialogs.interfaces.NeirDialogInterface;
@@ -27,6 +32,7 @@ import com.neirx.stopwatchtimer.fragments.VpStopwatchFragment;
 import com.neirx.stopwatchtimer.settings.AppSettings;
 import com.neirx.stopwatchtimer.settings.SettingPref;
 import com.neirx.stopwatchtimer.settings.SettingsManagement;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,18 +50,23 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
     PowerManager pm;
     MediaPlayer clearLapsSound;
     Set<SoundStateListener> soundStateListeners;
-    private boolean didKeepBright, isRunNow;
+    private boolean wasKeepBright, isRunNow;
+    private final String whatDisplay = "whatDisplay";
+    private final int SHOW_STOPWATCH = 1;
+    private final int notifyId = 412;
 
-    public void setSoundStateListener(SoundStateListener listener){
-        if(soundStateListeners == null){
+
+    public void setSoundStateListener(SoundStateListener listener) {
+        if (soundStateListeners == null) {
             soundStateListeners = new HashSet<>();
         }
         soundStateListeners.add(listener);
     }
 
-    public interface SoundStateListener{
+    public interface SoundStateListener {
         void onChangeState(boolean state);
     }
+
     public boolean isSoundOn() {
         return isSoundOn;
     }
@@ -73,9 +84,9 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
     protected void onStart() {
         super.onStart();
         Log.d(MainActivity.TAG, CLASS_NAME + "onStart");
+        GoogleAnalytics.getInstance(this).reportActivityStart(this);
         screenOrientation = settings.getIntPref(SettingPref.Int.screenOrientation, Statical.SCREEN_ORIENTATION_SYSTEM);
         switchScreenOrientation(screenOrientation);
-        checkWakeLock();
     }
 
     @Override
@@ -89,7 +100,7 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         String[] titleList = getResources().getStringArray(R.array.drop_down_navigation);
         setTitle("Секундомер");
 
-        if(actionBar != null) {
+        if (actionBar != null) {
             /*/убрать название приложения
             actionBar.setDisplayShowTitleEnabled(false);
             //установка навигиции с помощью выпадающего списка
@@ -106,7 +117,7 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         fragmentManager = getFragmentManager();
 
         //vpStopwatchFragment = VpStopwatchFragment.newInstance();
-        if(savedInstanceState == null) {
+        if (savedInstanceState == null) {
             isRunNow = settings.getBoolPref(SettingPref.Bool.isStopwatchRun);
             vpStopwatchFragment = VpStopwatchFragment.newInstance();
             bottomMenuFragment = BottomMenuFragment.newInstance();
@@ -120,30 +131,27 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
             vpStopwatchFragment = (VpStopwatchFragment) fragmentManager.getFragment(savedInstanceState, "vpStopwatchFragment");
             bottomMenuFragment = (BottomMenuFragment) fragmentManager.getFragment(savedInstanceState, "bottomMenuFragment");
         }
-
-        clearLapsSound = MediaPlayer.create(this, R.raw.test_btn);
-
-        GA.tracker().setScreenName("MainActivity");
-        GA.tracker().send(new HitBuilders.EventBuilder("UI", "onCreate").build());
+        clearLapsSound = MediaPlayer.create(this, R.raw.sw_clearlaps_btn);
     }
 
     /**
      * Установка ориентации экрана приложения
+     *
      * @param orientation сохраненная в настройках ориентация
      */
-    private void switchScreenOrientation(int orientation){
-        switch (orientation){
+    private void switchScreenOrientation(int orientation) {
+        switch (orientation) {
             case Statical.SCREEN_ORIENTATION_SYSTEM:
-                setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
                 break;
             case Statical.SCREEN_ORIENTATION_PORTRAIT:
-                setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 break;
             case Statical.SCREEN_ORIENTATION_LANDSCAPE:
-                setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 break;
             case Statical.SCREEN_ORIENTATION_AUTO:
-                setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                 break;
         }
     }
@@ -152,40 +160,60 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
      * Метод для сообщения фрагменту BottomMenuFragment, что произошло нажатие на
      * view секундомера.
      */
-    public void clickedStopwatch(boolean isRun){
-        if(bottomMenuFragment != null){
+    public void clickedStopwatch(boolean isRun) {
+        if (bottomMenuFragment != null) {
             bottomMenuFragment.clickedStopwatch(isRun);
         }
         isRunNow = isRun;
         checkWakeLock();
     }
 
-    private void checkWakeLock(){
-        if(isRunNow){
-            boolean isNotTurnOffScreen = settings.getBoolPref(SettingPref.Bool.isNotTurnOffScreen, false);
-            wakeLock(isNotTurnOffScreen);
-        } else if (mWakeLock != null) {
-            try {mWakeLock.release();} catch (Throwable th){}
+    public void switchStopwatch(boolean isRun) {
+        isRunNow = isRun;
+        checkWakeLock();
+    }
+
+    private void checkWakeLock() {
+        Log.d(MainActivity.TAG, CLASS_NAME + "checkBright isRunNow = " + isRunNow);
+        if (isRunNow) {
+
+            boolean isNotScreenDim = settings.getBoolPref(SettingPref.Bool.isNotScreenDim, false);
+            Log.d(MainActivity.TAG, CLASS_NAME + "checkBright isNotScreenDim = " + isNotScreenDim);
+            brightLock(isNotScreenDim);
+        } else {
+            wakeLock();
         }
     }
 
 
-    public void wakeLock(boolean keepBright){
-        if(keepBright){
-            if(mWakeLock == null || !didKeepBright){
-                if(mWakeLock != null) try{ mWakeLock.release();} catch (Throwable th){}
-                mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, "ScreeOnTag");
+    public void brightLock(boolean keepBright) {
+        if (keepBright) {
+            if (mWakeLock == null || !wasKeepBright) {
+                if (mWakeLock != null) try {
+                    mWakeLock.release();
+                } catch (Throwable th) {
+                }
+                mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
+                        PowerManager.ON_AFTER_RELEASE, "BrightOnTag");
             }
             mWakeLock.acquire();
-            didKeepBright = true;
+            wasKeepBright = true;
         } else {
-            if(mWakeLock == null || !didKeepBright) {
-                if(mWakeLock != null)  try{mWakeLock.release();} catch (Throwable th){}
-                mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, "ScreeOnTag");
-            }
-            mWakeLock.acquire();
-            didKeepBright = false;
+            wakeLock();
         }
+    }
+
+    public void wakeLock() {
+        if (mWakeLock == null || wasKeepBright) {
+            if (mWakeLock != null) try {
+                mWakeLock.release();
+            } catch (Throwable ignored) {
+            }
+            mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK |
+                    PowerManager.ON_AFTER_RELEASE, "ScreenOnTag");
+        }
+        mWakeLock.acquire();
+        wasKeepBright = false;
     }
 
     /**
@@ -205,7 +233,7 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
     /**
      * Скрытие пункта меню для очистки списка кругов
      */
-    public void setVisibleClearMenu(boolean visible){
+    public void setVisibleClearMenu(boolean visible) {
         isVisibleClearMenu = visible;
     }
 
@@ -227,10 +255,13 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.action_settings:
+                ThisApp.tracker().send(new HitBuilders.EventBuilder("ui", "open")
+                        .setLabel("settings")
+                        .build());
                 startActivity(new Intent(this, PreferencesActivity.class));
                 return true;
             case R.id.action_clear_laps:
-                if(getLapsFragment().lapsNotEmpty()){
+                if (getLapsFragment().lapsNotEmpty()) {
                     showClearLapsDialog();
                 }
                 return true;
@@ -244,8 +275,8 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
                     isSoundOn = true;
                     settings.setPref(SettingPref.Bool.soundState, true);
                 }
-                for (SoundStateListener listener : soundStateListeners){
-                    if(listener != null) listener.onChangeState(isSoundOn);
+                for (SoundStateListener listener : soundStateListeners) {
+                    if (listener != null) listener.onChangeState(isSoundOn);
                 }
                 return true;
         }
@@ -253,7 +284,7 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         return super.onOptionsItemSelected(item);
     }
 
-    private void showClearLapsDialog(){
+    private void showClearLapsDialog() {
         Resources res = getResources();
         CustomDialogFactory dialogFactory = CustomDialogFactory.newInstance(this);
         MessageDialog clearLapsDialog = dialogFactory.createMessageDialog();
@@ -262,7 +293,7 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         clearLapsDialog.setNegativeButton(res.getString(R.string.cancel_btn));
         clearLapsDialog.setMessage(res.getString(R.string.clear_laps_message));
         clearLapsDialog.setTitle(res.getString(R.string.clear_laps));
-        clearLapsDialog.show(getFragmentManager(), "clearLapsDialog");
+        clearLapsDialog.show(fragmentManager, "clearLapsDialog");
     }
 
     @Override
@@ -274,7 +305,7 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
             soundItem.setIcon(R.drawable.sound_off);
         }
         MenuItem clearItem = menu.findItem(R.id.action_clear_laps);
-        if (isVisibleClearMenu){
+        if (isVisibleClearMenu) {
             clearItem.setVisible(true);
         } else {
             clearItem.setVisible(false);
@@ -302,25 +333,22 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
     protected void onResume() {
         super.onResume();
         Log.d(MainActivity.TAG, CLASS_NAME + "onResume");
+        checkWakeLock();
     }
 
     @Override
     protected void onDestroy() {
-        if(mWakeLock != null) {
-            try{mWakeLock.release();} catch (Throwable th){}
-            mWakeLock = null;
-        }
         super.onDestroy();
         Log.d(MainActivity.TAG, CLASS_NAME + "onDestroy");
     }
 
     @Override
     public void onClick(String tag, int buttonId, Object extraData) {
-        switch (buttonId){
+        switch (buttonId) {
             case NeirDialogInterface.BUTTON_POSITIVE:
-                if(tag.equals("clearLapsDialog")){
+                if (tag.equals("clearLapsDialog")) {
                     getLapsFragment().clearLaps();
-                    if(isSoundOn) clearLapsSound.start();
+                    if (isSoundOn) clearLapsSound.start();
                 }
                 break;
             case NeirDialogInterface.BUTTON_NEGATIVE:
@@ -334,11 +362,13 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         super.onRestoreInstanceState(savedInstanceState);
         Log.d(MainActivity.TAG, CLASS_NAME + "onRestoreInstanceState");
     }
+
     @Override
     protected void onRestart() {
         super.onRestart();
         Log.d(MainActivity.TAG, CLASS_NAME + "onRestart");
     }
+
     /*@Override
     protected void onResume() {
         super.onResume();
@@ -349,10 +379,52 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         super.onPause();
         Log.d(MainActivity.TAG, CLASS_NAME + "onPause");
     }
+
     @Override
     protected void onStop() {
         super.onStop();
         Log.d(MainActivity.TAG, CLASS_NAME + "onStop");
+        if (mWakeLock != null) {
+            try {
+                mWakeLock.release();
+            } catch (Throwable th) {
+            }
+            mWakeLock = null;
+        }
+        GoogleAnalytics.getInstance(this).reportActivityStop(this);
+        if(isRunNow){
+           long totalTime = getStopwatchFragment().getTotalTime();
+            showStopwatchNotify(totalTime);
+        }
+        Log.d(MainActivity.TAG, CLASS_NAME + "onStop notify");
+    }
+
+    private void showStopwatchNotify(long startTime){
+        Notification.Builder notifyBuilder = new Notification.Builder(this)
+                .setSmallIcon(R.drawable.icon)
+                //.setContentText("")
+                .setContentTitle(getResources().getString(R.string.stopwatch))
+                .setUsesChronometer(true)
+                .setWhen(System.currentTimeMillis() - startTime)
+                .setAutoCancel(true);
+        Intent resultIntent = new Intent(this, MainActivity.class);
+        resultIntent.putExtra(whatDisplay, SHOW_STOPWATCH);
+        /*
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+                */
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(MainActivity.class);
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        notifyBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(notifyId, notifyBuilder.build());
     }
 
 

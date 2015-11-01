@@ -2,6 +2,7 @@ package com.neirx.stopwatchtimer.custom;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +22,11 @@ public class SettingsAdapter extends BaseAdapter {
     private static final int TYPE_HEADER = 1;
     private ArrayList<SettingItem> mData = new ArrayList<>();
     private TreeSet<Integer> sectionHeader = new TreeSet<>();
-
+    private final Context context;
     private LayoutInflater mInflater;
 
     public SettingsAdapter(Context context) {
+        this.context = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -92,6 +94,12 @@ public class SettingsAdapter extends BaseAdapter {
                     checkBox.setChecked(item.isChecked());
                 } else {
                     checkBox.setVisibility(View.GONE);
+                }
+                if(item.isDisable()){
+                    Resources resources = context.getResources();
+                    tvTitle.setTextColor(resources.getColor(R.color.setting_disable_text_title));
+                    tvSum.setTextColor(resources.getColor(R.color.setting_disable_text_summary));
+                    checkBox.setEnabled(false);
                 }
                 if(getItemViewType(position+1) == TYPE_HEADER){
                     View divider = convertView.findViewById(R.id.dividerItem);

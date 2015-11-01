@@ -9,7 +9,7 @@ import com.google.android.gms.analytics.Tracker;
  * Created by Waide Shery on 29.10.2015.
  *
  */
-public class GA extends Application {
+public class ThisApp extends Application {
     /**
      * The Analytics singleton. The field is set in onCreate method override when the application
      * class is initially created.
@@ -46,7 +46,6 @@ public class GA extends Application {
         analytics = GoogleAnalytics.getInstance(this);
         analytics.setLocalDispatchPeriod(1800);
 
-        // TODO: Replace the tracker-id with your app one from https://www.google.com/analytics/web/
         tracker = analytics.newTracker("UA-69450047-1");
 
         // Provide unhandled exceptions reports. Do that first after creating the tracker
