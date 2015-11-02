@@ -401,7 +401,7 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
 
     private void showStopwatchNotify(long startTime){
         Notification.Builder notifyBuilder = new Notification.Builder(this)
-                .setSmallIcon(R.drawable.icon)
+                .setSmallIcon(R.drawable.notify_icon)
                 //.setContentText("")
                 .setContentTitle(getResources().getString(R.string.stopwatch))
                 .setUsesChronometer(true)
