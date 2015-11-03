@@ -21,6 +21,9 @@
     <item name="dialog_list_text" type="color">#ff444849</item>
     <item name="dialog_btn_text" type="color">#ff444849</item>
 
+    <item name="text_lap_arrow" type="color">#307181</item>
+    <item name="bg_lap_num_arrow" type="color">#43adc8</item>
+
     <color name="hint_foreground_dark">#808080</color>
     <color name="hint_foreground_light">#808080</color>
 

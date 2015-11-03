@@ -106,22 +106,28 @@ public class SettingsFragmentTest extends Fragment implements NeirDialogInterfac
         //Настройка "Нажатие на циферблат"
         isChecked = settings.getBoolPref(SettingPref.Bool.isDialClickable);
         boolean dependenceDialClickable = isChecked;
-        settingItem = new SettingItem(titleDialClickable, sumDialClickable, isChecked);
-        settingItem.setKey(SettingPref.Bool.isDialClickable);
-        mAdapter.addItem(settingItem);
+        SettingItem dialClickableItem = new SettingItem(titleDialClickable, sumDialClickable, isChecked);
+        dialClickableItem.setKey(SettingPref.Bool.isDialClickable);
+        mAdapter.addItem(dialClickableItem);
 
         //Настройка "Стоп двойным нажатием"
         isChecked = settings.getBoolPref(SettingPref.Bool.twiceDialClick);
-        settingItem = new SettingItem(titleTwiceDialClick, sumTwiceDialClick, isChecked);
-        settingItem.setKey(SettingPref.Bool.twiceDialClick);
-        settingItem.setDisable(!dependenceDialClickable);
-        mAdapter.addItem(settingItem);
+        final SettingItem twiceDialClickItem = new SettingItem(titleTwiceDialClick, sumTwiceDialClick, isChecked);
+        twiceDialClickItem.setKey(SettingPref.Bool.twiceDialClick);
+        twiceDialClickItem.setDisable(!dependenceDialClickable);
+        dialClickableItem.setDependence(new SettingItem.Dependence() {
+            @Override
+            public void changeChecked(boolean isChecked) {
+                twiceDialClickItem.setDisable(!isChecked);
+            }
+        });
+        mAdapter.addItem(twiceDialClickItem);
 
         //Настройка "Вибрация"
         isChecked = settings.getBoolPref(SettingPref.Bool.vibrateState);
-        settingItem = new SettingItem(titleVibrateStatus, sumVibrateStatus, isChecked);
-        settingItem.setKey(SettingPref.Bool.vibrateState);
-        mAdapter.addItem(settingItem);
+        SettingItem vibrateStateItem = new SettingItem(titleVibrateStatus, sumVibrateStatus, isChecked);
+        vibrateStateItem.setKey(SettingPref.Bool.vibrateState);
+        mAdapter.addItem(vibrateStateItem);
 
         //Заголовок "Звуки"
         //mAdapter.addSectionHeaderItem(new SettingItem(titleSound));
@@ -163,10 +169,11 @@ public class SettingsFragmentTest extends Fragment implements NeirDialogInterfac
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             SettingItem item = (SettingItem) parent.getAdapter().getItem(position);
             RootDialog dialog;
-            if(item.hasCheckBox()){
+            if(item.hasCheckBox() && !item.isDisable()){
                 boolean isChecked = item.isChecked();
                 settings.setPref(item.getKey(), !isChecked);
                 item.setChecked(!isChecked);
+                item.checkDependence();
                 mAdapter.notifyDataSetChanged();
             } else if((dialog = item.getDialog()) != null){
                 FragmentManager manager = getFragmentManager();

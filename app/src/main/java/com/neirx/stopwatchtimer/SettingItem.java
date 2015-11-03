@@ -3,6 +3,10 @@ package com.neirx.stopwatchtimer;
 import com.neirx.neirdialogs.interfaces.RootDialog;
 import com.neirx.stopwatchtimer.settings.SettingsManagement;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * Created by Waide Shery on 24.08.2015.
  *
@@ -14,8 +18,28 @@ public class SettingItem {
     private boolean isChecked;
     private SettingsManagement.BoolPref key;
     private RootDialog dialog = null;
-
     private boolean disable;
+    private Set<Dependence> dependenceList;
+    public interface Dependence{
+        void changeChecked(boolean isChecked);
+    }
+
+    public void setDependence(Dependence dependence){
+        if(dependence ==  null) return;
+
+        if(dependenceList == null){
+            dependenceList = new HashSet<>();
+        }
+        dependenceList.add(dependence);
+    }
+
+    public void checkDependence(){
+        if (dependenceList != null && dependenceList.size() > 0){
+            for (Dependence dependence : dependenceList){
+                dependence.changeChecked(isChecked);
+            }
+        }
+    }
 
     public RootDialog getDialog() {
         return dialog;

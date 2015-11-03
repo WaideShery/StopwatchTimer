@@ -6,6 +6,7 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.Gravity;
@@ -13,8 +14,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.neirx.stopwatchtimer.MainActivity;
@@ -38,8 +42,8 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
     private LapsFragment lapsFragment;
     private MainActivity activity;
     private boolean isStopwatchRunning, wasStopwatchStart, isStopwatchClickable, incrStopwatchNum, needStartCount,
-            isSoundOn;
-    private long totalTime, baseTime, savedTime;
+            isSoundOn, twiceDialClickStop;
+    private long totalTime, baseTime, savedTime, previousClick;
     private int countTimeNum, countStopwatchNum;
     private int secondsTime;
     private int millisTime;
@@ -48,6 +52,7 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
     private float secDegree, minDegree;
     private Vibrator vibrator;
     private MediaPlayer startSound, stopSound, addLapSound, resetSound;
+    private LinearLayout layLapArrow;
 
     public long getTotalTime(){
         return totalTime;
@@ -78,7 +83,7 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
         Log.d(MainActivity.TAG, CLASS_NAME + "onCreateView");
         View rootView = inflater.inflate(R.layout.fragment_stopwatch, container, false);
         settings = AppSettings.getInstance(getActivity());
-        FrameLayout layoutStopwatch = (FrameLayout) rootView.findViewById(R.id.laySwStopwatch);
+        FrameLayout layoutStopwatch = (FrameLayout) rootView.findViewById(R.id.layDialStopwatch);
         layoutStopwatch.setOnClickListener(this);
         activity = (MainActivity) getActivity();
         vibrator = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
@@ -88,6 +93,7 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
         tvMillis = (TextView) rootView.findViewById(R.id.tvMillis);
         ivSecondHand = (ImageView) rootView.findViewById(R.id.ivSwSecondHand);
         ivMinuteHand = (ImageView) rootView.findViewById(R.id.ivSwMinuteHand);
+        layLapArrow = (LinearLayout) rootView.findViewById(R.id.layLapArrow);
         ivDial = (ImageView) rootView.findViewById(R.id.ivDial);
         ViewTreeObserver vto = ivDial.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -192,7 +198,6 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
     public void onStart() {
         super.onStart();
         Log.d(MainActivity.TAG, CLASS_NAME + "onStart");
-        isStopwatchClickable = settings.getBoolPref(SettingPref.Bool.isDialClickable, true);
     }
 
     @Override
@@ -215,8 +220,18 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.laySwStopwatch:
-                if (isStopwatchClickable) {
+            case R.id.layDialStopwatch:
+                isStopwatchClickable = settings.getBoolPref(SettingPref.Bool.isDialClickable, true);
+                if(!isStopwatchClickable) return;
+                twiceDialClickStop = settings.getBoolPref(SettingPref.Bool.twiceDialClick, false);
+                boolean twiceClick = false;
+                if(SystemClock.elapsedRealtime() - previousClick < 250) twiceClick = true;
+                if(isStopwatchRunning){
+                    previousClick = SystemClock.elapsedRealtime();
+                }
+                if(!isStopwatchRunning || !twiceDialClickStop) {
+                    switchStopwatch();
+                } else if(twiceClick){
                     switchStopwatch();
                 }
                 break;
@@ -276,9 +291,17 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
             }
             if (lapsFragment != null) {
                 if(isSoundOn) addLapSound.start();
+                if(countStopwatchNum == 1) lapArrowAnim();
                 lapsFragment.addLap(countStopwatchNum, countTimeNum, hoursTime, minutesTime, secondsTime, millisTime);
             }
         }
+    }
+
+    private void lapArrowAnim(){
+        Animation animation = new TranslateAnimation(100, 100, 100, 100);
+        animation.setDuration(1000);
+        animation.setFillAfter(true);
+        layLapArrow.startAnimation(animation);
     }
 
     public void clearLapsNum() {

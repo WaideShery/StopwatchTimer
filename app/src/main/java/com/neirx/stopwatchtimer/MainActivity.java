@@ -22,6 +22,7 @@ import android.view.MenuItem;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.neirx.neirdialogs.interfaces.MessageDialog;
 import com.neirx.neirdialogs.interfaces.NeirDialogInterface;
 import com.neirx.stopwatchtimer.fragments.BottomMenuFragment;
@@ -54,6 +55,7 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
     private final String whatDisplay = "whatDisplay";
     private final int SHOW_STOPWATCH = 1;
     private final int notifyId = 412;
+    Tracker tracker;
 
 
     public void setSoundStateListener(SoundStateListener listener) {
@@ -94,6 +96,7 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         Log.d(MainActivity.TAG, CLASS_NAME + "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        tracker = ThisApp.tracker();
 
         //Настройка ActionBar
         ActionBar actionBar = getActionBar();
@@ -334,6 +337,8 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         super.onResume();
         Log.d(MainActivity.TAG, CLASS_NAME + "onResume");
         checkWakeLock();
+        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(notifyId);
     }
 
     @Override
@@ -378,6 +383,11 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
     protected void onPause() {
         super.onPause();
         Log.d(MainActivity.TAG, CLASS_NAME + "onPause");
+        if(isRunNow){
+            long totalTime = getStopwatchFragment().getTotalTime();
+            showStopwatchNotify(totalTime);
+        }
+        Log.d(MainActivity.TAG, CLASS_NAME + "show notify");
     }
 
     @Override
@@ -392,11 +402,6 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
             mWakeLock = null;
         }
         GoogleAnalytics.getInstance(this).reportActivityStop(this);
-        if(isRunNow){
-           long totalTime = getStopwatchFragment().getTotalTime();
-            showStopwatchNotify(totalTime);
-        }
-        Log.d(MainActivity.TAG, CLASS_NAME + "onStop notify");
     }
 
     private void showStopwatchNotify(long startTime){

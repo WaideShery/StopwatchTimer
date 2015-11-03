@@ -49,8 +49,7 @@
         </receiver>
         <service
             android:name="com.google.android.gms.analytics.CampaignTrackingService"
-            android:enabled="true" />
-
+            android:enabled="true"/>
 
         <activity
             android:name=".MainActivity"

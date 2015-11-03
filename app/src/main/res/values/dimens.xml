@@ -28,4 +28,8 @@
     <dimen name="pref_group_padding">6dp</dimen>
     <dimen name="pref_chb_left_right_margin">4dp</dimen>
     <dimen name="pref_divider_list_height">1dp</dimen>
+    <dimen name="text_size_lap_time_arrow">18sp</dimen>
+    <dimen name="text_size_lap_millis_arrow">16sp</dimen>
+    <dimen name="text_size_lap_num_arrow">18sp</dimen>
+    <dimen name="square_lap_num_arrow">24dp</dimen>
 </resources>

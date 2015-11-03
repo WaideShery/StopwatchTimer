@@ -68,7 +68,7 @@
     </LinearLayout>
 
     <FrameLayout
-        android:id="@+id/laySwStopwatch"
+        android:id="@+id/layDialStopwatch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/laySwTime">

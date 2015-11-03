@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.neirx.stopwatchtimer.R;
@@ -100,6 +101,8 @@ public class SettingsAdapter extends BaseAdapter {
                     tvTitle.setTextColor(resources.getColor(R.color.setting_disable_text_title));
                     tvSum.setTextColor(resources.getColor(R.color.setting_disable_text_summary));
                     checkBox.setEnabled(false);
+                    convertView.findViewById(R.id.layItemSelector).setBackgroundColor(context.getResources()
+                            .getColor(R.color.app_background));
                 }
                 if(getItemViewType(position+1) == TYPE_HEADER){
                     View divider = convertView.findViewById(R.id.dividerItem);

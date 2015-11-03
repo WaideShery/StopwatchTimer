@@ -9,6 +9,7 @@ import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
 import com.neirx.stopwatchtimer.fragments.SettingsFragment;
 import com.neirx.stopwatchtimer.fragments.SettingsFragmentTest;
 import com.neirx.stopwatchtimer.settings.AppSettings;
@@ -26,6 +27,7 @@ public class PreferencesActivity extends Activity {
         super.onStart();
         Log.d(MainActivity.TAG, CLASS_NAME + "onStart");
         switchScreenOrientation();
+        GoogleAnalytics.getInstance(this).reportActivityStart(this);
     }
 
     @Override
@@ -59,7 +61,7 @@ public class PreferencesActivity extends Activity {
         screenOrientation = settings.getIntPref(SettingPref.Int.screenOrientation, 0);
         switch (screenOrientation){
             case Statical.SCREEN_ORIENTATION_SYSTEM:
-                setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
                 break;
             case Statical.SCREEN_ORIENTATION_PORTRAIT:
                 setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -71,5 +73,12 @@ public class PreferencesActivity extends Activity {
                 setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                 break;
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(MainActivity.TAG, CLASS_NAME + "onStop");
+        GoogleAnalytics.getInstance(this).reportActivityStop(this);
     }
 }
