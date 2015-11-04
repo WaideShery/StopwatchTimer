@@ -1,9 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        ReleaseKey {
+            storeFile file('/home/waide/Android/StudioProjects/SignKeys/stopwatchtimer.jks')
+        }
+    }
     compileSdkVersion 22
     buildToolsVersion '23.0.1'
-
     defaultConfig {
         applicationId "com.neirx.stopwatchtimer"
         minSdkVersion 17
@@ -15,9 +19,9 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.ReleaseKey
         }
     }
-
     sourceSets {
         main {
             res.srcDirs =
