@@ -28,6 +28,10 @@ public class LapAdapter extends BaseAdapter {
         this.notifyDataSetChanged();
     }
 
+    public Lap getLastLap(){
+        return objects.get(getCount()-1);
+    }
+
     public  void clearLapsFromList(){
         Log.d(MainActivity.TAG, CLASS_NAME + Thread.currentThread().getName());
         objects.clear();

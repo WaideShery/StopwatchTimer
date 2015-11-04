@@ -37,22 +37,20 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
     private SettingsManagement settings;
     private ImageView ivSecondHand, ivMinuteHand;
     private ImageView ivDial;
-    private TextView tvHours, tvMinutes, tvSeconds, tvMillis;
+    private TextView tvHours, tvMinutes, tvSeconds, tvMillis, tvLapNum, tvLapMillis, tvLapTime;
     private Stopwatch stopwatch;
     private LapsFragment lapsFragment;
     private MainActivity activity;
     private boolean isStopwatchRunning, wasStopwatchStart, isStopwatchClickable, incrStopwatchNum, needStartCount,
             isSoundOn, twiceDialClickStop;
     private long totalTime, baseTime, savedTime, previousClick;
-    private int countTimeNum, countStopwatchNum;
-    private int secondsTime;
-    private int millisTime;
-    private int minutesTime;
-    private int hoursTime;
+    private int countTimeNum, countStopwatchNum, hoursTime, minutesTime, secondsTime, millisTime;
     private float secDegree, minDegree;
     private Vibrator vibrator;
     private MediaPlayer startSound, stopSound, addLapSound, resetSound;
     private LinearLayout layLapArrow;
+    private boolean lapArrowDisplays;
+    private long lastLapTime;
 
     public long getTotalTime(){
         return totalTime;
@@ -66,6 +64,7 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("countTimeNum", countTimeNum);
+        outState.putLong("lastLapTime", lastLapTime);
         outState.putInt("countStopwatchNum", countStopwatchNum);
         outState.putLong("baseTime", baseTime);
         outState.putLong("savedTime", savedTime);
@@ -75,6 +74,7 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
         outState.putBoolean("isStopwatchRunning", isStopwatchRunning);
         outState.putBoolean("wasStopwatchStart", wasStopwatchStart);
         outState.putBoolean("incrStopwatchNum", incrStopwatchNum);
+        outState.putBoolean("lapArrowDisplays", lapArrowDisplays);
         Log.d(MainActivity.TAG, CLASS_NAME + "onSaveInstanceState");
     }
 
@@ -93,7 +93,6 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
         tvMillis = (TextView) rootView.findViewById(R.id.tvMillis);
         ivSecondHand = (ImageView) rootView.findViewById(R.id.ivSwSecondHand);
         ivMinuteHand = (ImageView) rootView.findViewById(R.id.ivSwMinuteHand);
-        layLapArrow = (LinearLayout) rootView.findViewById(R.id.layLapArrow);
         ivDial = (ImageView) rootView.findViewById(R.id.ivDial);
         ViewTreeObserver vto = ivDial.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -119,6 +118,10 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
             }
 
         });
+        layLapArrow = (LinearLayout) rootView.findViewById(R.id.layLapArrow);
+        tvLapNum = (TextView) rootView.findViewById(R.id.tvLapNum);
+        tvLapMillis = (TextView) rootView.findViewById(R.id.tvLapMillis);
+        tvLapTime = (TextView) rootView.findViewById(R.id.tvLapTime);
 
         isSoundOn = ((MainActivity) getActivity()).isSoundOn();
         ((MainActivity) getActivity()).setSoundStateListener(new MainActivity.SoundStateListener() {
@@ -135,6 +138,8 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
         stopwatch = new Stopwatch(this);
 
         if (savedInstanceState == null) {
+            lapArrowDisplays = settings.getBoolPref(SettingPref.Bool.lapArrowDisplays, false);
+            lastLapTime = settings.getLongPref(SettingPref.Long.lastLapTime, 0);
             countTimeNum = settings.getIntPref(SettingPref.Int.countTimeNum);
             countStopwatchNum = settings.getIntPref(SettingPref.Int.countStopwatchNum, 0);
             baseTime = settings.getLongPref(SettingPref.Long.stopwatchBaseTime, -1);
@@ -167,6 +172,8 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
             }
         } else {
             Log.d(MainActivity.TAG, CLASS_NAME + "savedInstanceState != null");
+            lapArrowDisplays = savedInstanceState.getBoolean("lapArrowDisplays");
+            lastLapTime = savedInstanceState.getLong("lastLapTime");
             isStopwatchRunning = savedInstanceState.getBoolean("isStopwatchRunning", false);
             wasStopwatchStart = savedInstanceState.getBoolean("wasStopwatchStart", false);
             incrStopwatchNum = savedInstanceState.getBoolean("incrStopwatchNum", true);
@@ -198,6 +205,10 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
     public void onStart() {
         super.onStart();
         Log.d(MainActivity.TAG, CLASS_NAME + "onStart");
+        if(lapArrowDisplays){
+            setLapArrowText();
+            lapArrowAnim(true, true, false);
+        }
     }
 
     @Override
@@ -291,17 +302,106 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
             }
             if (lapsFragment != null) {
                 if(isSoundOn) addLapSound.start();
-                if(countStopwatchNum == 1) lapArrowAnim();
                 lapsFragment.addLap(countStopwatchNum, countTimeNum, hoursTime, minutesTime, secondsTime, millisTime);
+                lastLapTime = lapsFragment.getLastLapTime();
+                settings.setPref(SettingPref.Long.lastLapTime, lastLapTime);
+                if(!lapArrowDisplays) {
+                    lapArrowAnim(true, false, true);
+                    lapArrowDisplays = true;
+                    settings.setPref(SettingPref.Bool.lapArrowDisplays, true);
+                } else {
+                    setLapArrowText();
+                }
             }
         }
     }
 
-    private void lapArrowAnim(){
-        Animation animation = new TranslateAnimation(100, 100, 100, 100);
-        animation.setDuration(1000);
+    private void lapArrowAnim(final boolean show, boolean instant, boolean setAnimationListener){
+        long duration;
+        if(instant){
+            duration = 1;
+        } else {
+            duration = 500;
+        }
+        float fromYValue, toYValue;
+        if(show){
+            fromYValue = 0f;
+            toYValue = -1f;
+        } else{
+            fromYValue = -1f;
+            toYValue = 0f;
+        }
+        Animation animation = new TranslateAnimation(
+                Animation.RELATIVE_TO_SELF, 0,
+                Animation.RELATIVE_TO_SELF, 0,
+                Animation.RELATIVE_TO_SELF, fromYValue,
+                Animation.RELATIVE_TO_SELF, toYValue);
+        animation.setDuration(duration);
         animation.setFillAfter(true);
+        if(setAnimationListener) {
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    if(show) {
+                        setLapArrowText();
+                    } else {
+                        clearLapArrowText();
+                    }
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                }
+            });
+        }
         layLapArrow.startAnimation(animation);
+
+    }
+
+    private void setLapArrowText(){
+        int hours = (int) (lastLapTime / (60 * 60 * 1000));
+        int restHours = (int) (lastLapTime % (60 * 60 * 1000));
+        int minutes = restHours / (60 * 1000);
+        int restMinutes = restHours % (60 * 1000);
+        int seconds = restMinutes / 1000;
+        int millis = restMinutes % 1000;
+
+        String lapNum = ""+countTimeNum;
+        StringBuilder builder = new StringBuilder();
+        if(hours < 10){
+            builder.append("0");
+        }
+        builder.append(hours).append(":");
+        if(minutes < 10){
+            builder.append("0");
+        }
+        builder.append(minutes).append(":");
+        if(seconds < 10) {
+            builder.append("0");
+        }
+        builder.append(seconds).append(".");
+        String lapTime = builder.toString();
+        builder = new StringBuilder();
+        if(millis < 10){
+            builder.append("00");
+        } else if(millis < 100){
+            builder.append("0");
+        }
+        builder.append(millis);
+        String lapMillis = builder.toString();
+        tvLapNum.setText(lapNum);
+        tvLapTime.setText(lapTime);
+        tvLapMillis.setText(lapMillis);
+    }
+
+    private void clearLapArrowText(){
+        tvLapNum.setText("");
+        tvLapTime.setText("");
+        tvLapMillis.setText("");
     }
 
     public void clearLapsNum() {
@@ -338,6 +438,11 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
         settings.setPref(SettingPref.Long.stopwatchSavedTime, savedTime);
         activity.clickedStopwatch(isStopwatchRunning);
         resetStopwatchAnimation();
+        if(lapArrowDisplays){
+            lapArrowAnim(false, false, true);
+            lapArrowDisplays = false;
+            settings.setPref(SettingPref.Bool.lapArrowDisplays, false);
+        }
     }
 
     /**

@@ -135,7 +135,7 @@
                     android:id="@+id/tvLapTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="00:02:35."
+                    android:text=""
                     android:textColor="@color/text_lap_arrow"
                     android:textSize="@dimen/text_size_lap_time_arrow"
                     android:textStyle="bold" />
@@ -144,7 +144,7 @@
                     android:id="@+id/tvLapMillis"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="264"
+                    android:text=""
                     android:textColor="@color/text_lap_arrow"
                     android:textSize="@dimen/text_size_lap_millis_arrow"
                     android:textStyle="bold" />
@@ -163,7 +163,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="0dp"
-                android:text="5"
+                android:text=""
                 android:textColor="@color/text_lap_arrow"
                 android:textSize="@dimen/text_size_lap_num_arrow"
                 android:textStyle="bold" />

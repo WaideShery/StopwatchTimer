@@ -29,6 +29,7 @@ public class LapsFragment extends Fragment {
     private ListView listView;
     private int stopwatchNum = 1;
     private long previousTime;
+    private long difference;
     private boolean wasClear;
     private SettingsManagement settings;
 
@@ -76,6 +77,10 @@ public class LapsFragment extends Fragment {
         }
     }
 
+    public long getLastLapTime(){
+        return difference;
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -94,6 +99,7 @@ public class LapsFragment extends Fragment {
         }
 
         Log.d(MainActivity.TAG, CLASS_NAME + hours+":"+minutes+":"+seconds+"."+millis);
+
         Lap lap = new Lap(stopwatchNum, timeNum,formatTime(hours, minutes, seconds, millis),
                 formatTimeDifference(((hours*60+minutes)*60+seconds)*1000+millis));
         this.stopwatchNum = stopwatchNum;
@@ -115,7 +121,7 @@ public class LapsFragment extends Fragment {
     }
 
     private String formatTimeDifference(long lastTimeInMillis){
-        long difference = lastTimeInMillis - previousTime;
+        difference = lastTimeInMillis - previousTime;
         int millisDiffer = (int) (difference % 1000);
         int secondsDiffer = (int) (difference / 1000);
         int minutesDiffer = secondsDiffer / 60;

@@ -87,8 +87,6 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         super.onStart();
         Log.d(MainActivity.TAG, CLASS_NAME + "onStart");
         GoogleAnalytics.getInstance(this).reportActivityStart(this);
-        screenOrientation = settings.getIntPref(SettingPref.Int.screenOrientation, Statical.SCREEN_ORIENTATION_SYSTEM);
-        switchScreenOrientation(screenOrientation);
     }
 
     @Override
@@ -339,6 +337,8 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         checkWakeLock();
         NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(notifyId);
+        screenOrientation = settings.getIntPref(SettingPref.Int.screenOrientation, Statical.SCREEN_ORIENTATION_SYSTEM);
+        switchScreenOrientation(screenOrientation);
     }
 
     @Override
