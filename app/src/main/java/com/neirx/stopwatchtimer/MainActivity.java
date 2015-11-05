@@ -7,7 +7,6 @@ import android.app.FragmentTransaction;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -33,6 +32,7 @@ import com.neirx.stopwatchtimer.fragments.VpStopwatchFragment;
 import com.neirx.stopwatchtimer.settings.AppSettings;
 import com.neirx.stopwatchtimer.settings.SettingPref;
 import com.neirx.stopwatchtimer.settings.SettingsManagement;
+import com.neirx.stopwatchtimer.utility.CustomDialogFactory;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -99,7 +99,7 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         //Настройка ActionBar
         ActionBar actionBar = getActionBar();
         String[] titleList = getResources().getStringArray(R.array.drop_down_navigation);
-        setTitle("Секундомер");
+        setTitle(getString(R.string.stopwatch));
 
         if (actionBar != null) {
             /*/убрать название приложения
@@ -192,7 +192,7 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
             if (mWakeLock == null || !wasKeepBright) {
                 if (mWakeLock != null) try {
                     mWakeLock.release();
-                } catch (Throwable th) {
+                } catch (Throwable ignored) {
                 }
                 mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
                         PowerManager.ON_AFTER_RELEASE, "BrightOnTag");
@@ -397,7 +397,7 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         if (mWakeLock != null) {
             try {
                 mWakeLock.release();
-            } catch (Throwable th) {
+            } catch (Throwable ignored) {
             }
             mWakeLock = null;
         }
@@ -414,18 +414,7 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
                 .setAutoCancel(true);
         Intent resultIntent = new Intent(this, MainActivity.class);
         resultIntent.putExtra(whatDisplay, SHOW_STOPWATCH);
-        /*
-        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-                */
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(MainActivity.class);
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_ONE_SHOT);
         notifyBuilder.setContentIntent(resultPendingIntent);
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

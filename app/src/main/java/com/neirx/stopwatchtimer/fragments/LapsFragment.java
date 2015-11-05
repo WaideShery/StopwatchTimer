@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 
-import com.neirx.stopwatchtimer.Lap;
-import com.neirx.stopwatchtimer.LapAdapter;
+import com.neirx.stopwatchtimer.custom.Lap;
+import com.neirx.stopwatchtimer.custom.LapAdapter;
 import com.neirx.stopwatchtimer.MainActivity;
 import com.neirx.stopwatchtimer.R;
 import com.neirx.stopwatchtimer.settings.AppSettings;

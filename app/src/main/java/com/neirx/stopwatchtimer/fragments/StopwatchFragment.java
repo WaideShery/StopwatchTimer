@@ -1,6 +1,5 @@
 package com.neirx.stopwatchtimer.fragments;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.media.MediaPlayer;
@@ -641,12 +640,6 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener,
     }
 
     //-------------------- Методы жизненного цикла(BEGIN) --------------------
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        Log.d(MainActivity.TAG, CLASS_NAME + "onAttach");
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

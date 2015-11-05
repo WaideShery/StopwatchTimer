@@ -7,7 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.neirx.stopwatchtimer.Lap;
+import com.neirx.stopwatchtimer.custom.Lap;
 
 import java.util.ArrayList;
 import java.util.List;

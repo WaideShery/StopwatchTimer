@@ -1,0 +1,53 @@
+<resources>
+    <!--string name="app_name">Stopwatch &amp; Timer</string-->
+    <string name="app_name">Секундомір</string>
+    <string name="stopwatch">Секундомір</string>
+    <string name="action_settings">Налаштування</string>
+    <string name="sound_state">Звук</string>
+    <string name="ok_btn">Ок</string>
+    <string name="cancel_btn">Відміна</string>
+    <string name="yes_btn">Так</string>
+    <string name="clear_laps_message">Видалити всі записи?</string>
+    <string name="lap">Коло</string>
+    <string name="start">Старт</string>
+    <string name="stop">Стоп</string>
+    <string name="reset">Скинути</string>
+    <string name="clear_laps">Очищення кіл</string>
+    <string name="total_time">Загальний</string>
+    <string name="lap_time">Коло</string>
+    <string name="pref_screen">Екран</string>
+    <string name="pref_control">Керування</string>
+    <string name="pref_sound">Звуки</string>
+    <string name="pref_screenStatus">Не затемнювати екран</string>
+    <string name="pref_screenStatus_summ">Під час роботи яскравість екрану не зменшується</string>
+    <string name="pref_keySoundStatus">Звук кнопок</string>
+    <string name="pref_keySoundStatus_summ">Звуковий супровід при натисканні на кнопки</string>
+    <string name="pref_vibrateStatus">Вібровідгук</string>
+    <string name="pref_vibrateStatus_summ">Вібрація при натисканні на кнопки</string>
+    <string name="pref_timerLongAlarm">Довгий сигнал таймера</string>
+    <string name="pref_timerLongAlarm_summ">Відключати оповіщення про закінчення таймера після натискання кнопки</string>
+    <string name="pref_customSoundTimer">Мелодія таймера</string>
+    <string name="pref_customSoundTimer_summ">Встановити свою мелодію закінчення таймера</string>
+    <string name="pref_selectMelody">Вибір мелодії</string>
+    <string name="pref_dialClickable">Натискання на циферблат</string>
+    <string name="pref_dialClickable_summ">Керування секундоміром за допомогою натискання на циферблат</string>
+    <string name="pref_twiceDialClick">Стоп подвійним натисканням</string>
+    <string name="pref_twiceDialClick_summ">Зупинка секундоміра подвійним натисканням на циферблат</string>
+    <string name="pref_screenOrientation">Орієнтація екрана</string>
+
+
+    <string-array name="drop_down_navigation">
+        <item>Секундомір</item>
+        <item>Таймер</item>
+    </string-array>
+    <string-array name="pref_screenOrientation_entries">
+        <item>Системна</item>
+        <item>Портретна</item>
+        <item>Альбомна</item>
+        <item>Авто</item>
+    </string-array>
+
+    //********************** Не Переводится **************************
+    <string name="num_time">#</string>
+
+</resources>

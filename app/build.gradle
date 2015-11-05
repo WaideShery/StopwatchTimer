@@ -3,21 +3,21 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         ReleaseKey {
-            storeFile file('/home/waide/Android/StudioProjects/SignKeys/stopwatchtimer.jks')
+            storeFile file('D:\\Android\\keyssss\\stopwatchtimer.jks')
         }
     }
-    compileSdkVersion 22
+    compileSdkVersion 23
     buildToolsVersion '23.0.1'
     defaultConfig {
         applicationId "com.neirx.stopwatchtimer"
         minSdkVersion 17
-        targetSdkVersion 22
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.ReleaseKey
         }
@@ -36,7 +36,7 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.google.android.gms:play-services:8.1.0'
-    compile 'com.android.support:support-v4:23.0.1'
-    compile 'com.android.support:support-v13:23.0.1'
+    compile 'com.android.support:support-v4:23.1.0'
     compile project(':neirdialogs')
+    compile 'com.android.support:support-v13:23.1.0'
 }

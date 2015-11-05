@@ -14,7 +14,5 @@ public class SettingPref {
     }
     public enum Int implements SettingsManagement.IntPref{
         screenOrientation, countTimeNum, countStopwatchNum
-
-
     }
 }

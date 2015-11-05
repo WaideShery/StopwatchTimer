@@ -1,61 +1,53 @@
 <resources>
     <!--string name="app_name">Stopwatch &amp; Timer</string-->
-    <string name="app_name">Секундомер</string>
-    <string name="stopwatch">Секундомер</string>
-    <string name="action_settings">Настройки</string>
+    <string name="app_name">Stopwatch</string>
+    <string name="stopwatch">Stopwatch</string>
+    <string name="action_settings">Settings</string>
     <string name="sound_state">Sound</string>
     <string name="ok_btn">Ок</string>
-    <string name="cancel_btn">Отмена</string>
-    <string name="yes_btn">Да</string>
-    <string name="clear_laps_message">Удалить все записи?</string>
-    <string name="clean">Clean</string>
+    <string name="cancel_btn">Cancel</string>
+    <string name="yes_btn">Yes</string>
+    <string name="clear_laps_message">Remove all entries?</string>
     <string name="lap">Lap</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="reset">Reset</string>
-    <string name="clear_laps">Очистка кругов</string>
+    <string name="clear_laps">Clear laps</string>
     <string name="total_time">Total</string>
     <string name="lap_time">Lap</string>
-    <string name="pref_screen">Экран</string>
-    <string name="pref_control">Управление</string>
-    <string name="pref_sound">Звуки</string>
-    <string name="pref_screenStatus">Не затемнять экран</string>
-    <string name="pref_screenStatus_summ">Во время работы яркость экрана не уменьшается</string>
-    <string name="pref_keySoundStatus">Звук кнопок</string>
-    <string name="pref_keySoundStatus_summ">Звуковое совпровождение при нажатии на кнопки</string>
-    <string name="pref_vibrateStatus">Виброотклик</string>
-    <string name="pref_vibrateStatus_summ">Вибрация при нажатии на кнопки</string>
-    <string name="pref_timerLongAlarm">Долгий сигнал таймера</string>
-    <string name="pref_timerLongAlarm_summ">Отключать оповещение об окончание таймера по нажатию кнопки</string>
-    <string name="pref_customSoundTimer">Мелодия таймера</string>
-    <string name="pref_customSoundTimer_summ">Установить свою мелодию окончания таймера</string>
-    <string name="pref_selectMelody">Выбор мелодии</string>
-    <string name="pref_dialClickable">Нажатие на циферблат</string>
-    <string name="pref_dialClickable_summ">Управление секундомером с помощью нажатия на циферблат</string>
-    <string name="pref_twiceDialClick">Стоп двойным нажатием</string>
-    <string name="pref_twiceDialClick_summ">Остановка секундомера двойным нажатием на циферблат</string>
-    <string name="pref_screenOrientation">Ориентация экрана</string>
+    <string name="pref_screen">Screen</string>
+    <string name="pref_control">Control</string>
+    <string name="pref_sound">Sounds</string>
+    <string name="pref_screenStatus">Keep the screen from dimming</string>
+    <string name="pref_screenStatus_summ">While working the brightness does not decrease</string>
+    <string name="pref_keySoundStatus">Buttons sound</string>
+    <string name="pref_keySoundStatus_summ">Sound feedback by pressing the button</string>
+    <string name="pref_vibrateStatus">Haptic feedback</string>
+    <string name="pref_vibrateStatus_summ">Vibration when you click on the button</string>
+    <string name="pref_timerLongAlarm">Long timer signal</string>
+    <string name="pref_timerLongAlarm_summ">Turn off timer end signal by pressing the button</string>
+    <string name="pref_customSoundTimer">Melody timer</string>
+    <string name="pref_customSoundTimer_summ">Set custom the timer melody end</string>
+    <string name="pref_selectMelody">Select a melody</string>
+    <string name="pref_dialClickable">Clicking on the dial</string>
+    <string name="pref_dialClickable_summ">Start and stop the stopwatch by pressing the dial</string>
+    <string name="pref_twiceDialClick">Stop by double clicking</string>
+    <string name="pref_twiceDialClick_summ">Stop the stopwatch by double clicking on the dial</string>
+    <string name="pref_screenOrientation">Screen orientation</string>
 
 
     <string-array name="drop_down_navigation">
-        <item>Секундомер</item>
-        <item>Таймер</item>
+        <item>Stopwatch</item>
+        <item>Timer</item>
     </string-array>
     <string-array name="pref_screenOrientation_entries">
-        <item>Системная</item>
-        <item>Портрет</item>
-        <item>Альбом</item>
-        <item>Авто</item>
+        <item>System</item>
+        <item>Portrait</item>
+        <item>Landscape</item>
+        <item>Auto</item>
     </string-array>
 
     //********************** Не Переводится **************************
-    <string-array name="pref_screenOrientation_values">
-        <item>portrait</item>
-        <item>landscape</item>
-        <item>auto</item>
-        <item>system</item>
-    </string-array>
-    <string name="pref_screenOrientation_default">system</string>
     <string name="num_time">#</string>
 
 </resources>
