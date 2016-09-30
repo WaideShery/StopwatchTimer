@@ -14,10 +14,14 @@ import android.content.res.Resources;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RemoteViews;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -54,7 +58,7 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
     private boolean wasKeepBright, isRunNow;
     private final String whatDisplay = "whatDisplay";
     private final int SHOW_STOPWATCH = 1;
-    private final int notifyId = 412;
+    public static final int notifyId = 412;
     Tracker tracker;
 
 
@@ -129,8 +133,10 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
             fragmentTransaction.commit();
         } else {
             isRunNow = savedInstanceState.getBoolean("isRunNow", false);
-            vpStopwatchFragment = (VpStopwatchFragment) fragmentManager.getFragment(savedInstanceState, "vpStopwatchFragment");
-            bottomMenuFragment = (BottomMenuFragment) fragmentManager.getFragment(savedInstanceState, "bottomMenuFragment");
+            vpStopwatchFragment = (VpStopwatchFragment) fragmentManager.getFragment(savedInstanceState,
+                    "vpStopwatchFragment");
+            bottomMenuFragment = (BottomMenuFragment) fragmentManager.getFragment(savedInstanceState,
+                    "bottomMenuFragment");
         }
         clearLapsSound = MediaPlayer.create(this, R.raw.sw_clearlaps_btn);
     }
@@ -385,7 +391,8 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         Log.d(MainActivity.TAG, CLASS_NAME + "onPause");
         if(isRunNow){
             long totalTime = getStopwatchFragment().getTotalTime();
-            showStopwatchNotify(totalTime);
+            //showStopwatchNotify(totalTime);
+            showPlayNotify(totalTime);
         }
         Log.d(MainActivity.TAG, CLASS_NAME + "show notify");
     }
@@ -419,6 +426,32 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(notifyId, notifyBuilder.build());
+    }
+
+    private void showPlayNotify(long timeMillis){
+        Log.d("ST1Tag", "timeMillis = "+timeMillis);
+        RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.play_stopwatch_widget);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.notify_icon)
+                .setContent(remoteViews)
+                .setContentTitle(getResources().getString(R.string.stopwatch))
+                ;
+        Intent resultIntent = new Intent(this, MainActivity.class);
+
+        remoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime()-timeMillis,
+                null, true);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(MainActivity.class);
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent buttonPendingIntent = PendingIntent.getService(this, 78753,
+                new Intent(this, PlayPauseService.class), PendingIntent.FLAG_UPDATE_CURRENT);
+
+        remoteViews.setOnClickPendingIntent(R.id.ibPause, buttonPendingIntent);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        // mId allows you to update the notification later on.
+        mNotificationManager.notify(MainActivity.notifyId, mBuilder.build());
     }
 
 
