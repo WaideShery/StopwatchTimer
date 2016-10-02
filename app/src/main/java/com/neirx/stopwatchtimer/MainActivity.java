@@ -18,10 +18,16 @@ import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Chronometer;
+import android.widget.LinearLayout;
 import android.widget.RemoteViews;
+import android.widget.TextView;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -56,11 +62,10 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
     MediaPlayer clearLapsSound;
     Set<SoundStateListener> soundStateListeners;
     private boolean wasKeepBright, isRunNow;
-    private final String whatDisplay = "whatDisplay";
-    private final int SHOW_STOPWATCH = 1;
+    final static String whatDisplay = "whatDisplay";
+    final static int SHOW_STOPWATCH = 1;
     public static final int notifyId = 412;
     Tracker tracker;
-
 
     public void setSoundStateListener(SoundStateListener listener) {
         if (soundStateListeners == null) {
@@ -431,29 +436,28 @@ public class MainActivity extends Activity implements ActionBar.OnNavigationList
     private void showPlayNotify(long timeMillis){
         Log.d("ST1Tag", "timeMillis = "+timeMillis);
         RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.play_stopwatch_widget);
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.notify_icon)
-                .setContent(remoteViews)
-                .setContentTitle(getResources().getString(R.string.stopwatch))
-                ;
+
         Intent resultIntent = new Intent(this, MainActivity.class);
+        resultIntent.putExtra(whatDisplay, SHOW_STOPWATCH);
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_ONE_SHOT);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+                .setCustomContentView(remoteViews)
+                .setSmallIcon(R.drawable.notify_icon)
+                .setContentIntent(resultPendingIntent);
 
         remoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime()-timeMillis,
                 null, true);
 
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(MainActivity.class);
-        stackBuilder.addNextIntent(resultIntent);
         PendingIntent buttonPendingIntent = PendingIntent.getService(this, 78753,
                 new Intent(this, PlayPauseService.class), PendingIntent.FLAG_UPDATE_CURRENT);
-
         remoteViews.setOnClickPendingIntent(R.id.ibPause, buttonPendingIntent);
+
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // mId allows you to update the notification later on.
         mNotificationManager.notify(MainActivity.notifyId, mBuilder.build());
     }
-
 
     /*@Override
     protected void onDestroy() {

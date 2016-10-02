@@ -3,7 +3,7 @@ apply plugin: 'com.android.library'
 android {
     signingConfigs {
         ReleaseKey {
-            storeFile file('D:\\Android\\keyssss\\stopwatchtimer.jks')
+            storeFile file('../../1_keys/stopwatchtimer.jks')
         }
     }
     compileSdkVersion 23

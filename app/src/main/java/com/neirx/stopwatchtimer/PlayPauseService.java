@@ -1,15 +1,24 @@
 package com.neirx.stopwatchtimer;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.RemoteViews;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.neirx.stopwatchtimer.settings.AppSettings;
 import com.neirx.stopwatchtimer.settings.SettingPref;
@@ -59,7 +68,7 @@ public class PlayPauseService extends Service{
         return START_NOT_STICKY;
     }
 
-    private void showPauseNotify(long timeMillis){
+    /*private void showPauseNotify(long timeMillis){
         RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.pause_stopwatch_widget);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
                 this).setSmallIcon(R.drawable.notify_icon).setContent(remoteViews);
@@ -78,27 +87,59 @@ public class PlayPauseService extends Service{
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // mId allows you to update the notification later on.
         mNotificationManager.notify(MainActivity.notifyId, mBuilder.build());
-    }
+    }*/
 
-    private void showPlayNotify(long timeMillis){
-        RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.play_stopwatch_widget);
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-                this).setSmallIcon(R.drawable.notify_icon).setContent(remoteViews);
+    private void showPauseNotify(long timeMillis){
+        RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.pause_stopwatch_widget);
+
         Intent resultIntent = new Intent(this, MainActivity.class);
+        resultIntent.putExtra(MainActivity.whatDisplay, MainActivity.SHOW_STOPWATCH);
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent,
+                PendingIntent.FLAG_ONE_SHOT);
 
-        remoteViews.setChronometer(R.id.chronometer, timeMillis, null, true);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+                .setCustomContentView(remoteViews)
+                .setSmallIcon(R.drawable.notify_icon)
+                .setContentIntent(resultPendingIntent);
 
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(MainActivity.class);
-        stackBuilder.addNextIntent(resultIntent);
+        remoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime()-timeMillis,
+                null, false);
+
         PendingIntent buttonPendingIntent = PendingIntent.getService(this, 78753,
                 new Intent(this, PlayPauseService.class), PendingIntent.FLAG_UPDATE_CURRENT);
-
         remoteViews.setOnClickPendingIntent(R.id.ibPause, buttonPendingIntent);
+
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // mId allows you to update the notification later on.
         mNotificationManager.notify(MainActivity.notifyId, mBuilder.build());
     }
+
+
+    private void showPlayNotify(long timeMillis){
+        RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.play_stopwatch_widget);
+
+        Intent resultIntent = new Intent(this, MainActivity.class);
+        resultIntent.putExtra(MainActivity.whatDisplay, MainActivity.SHOW_STOPWATCH);
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_ONE_SHOT);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+                .setCustomContentView(remoteViews)
+                .setSmallIcon(R.drawable.notify_icon)
+                .setContentIntent(resultPendingIntent);
+
+        remoteViews.setChronometer(R.id.chronometer, SystemClock.elapsedRealtime()-timeMillis,
+                null, true);
+
+        PendingIntent buttonPendingIntent = PendingIntent.getService(this, 78753,
+                new Intent(this, PlayPauseService.class), PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteViews.setOnClickPendingIntent(R.id.ibPause, buttonPendingIntent);
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        // mId allows you to update the notification later on.
+        mNotificationManager.notify(MainActivity.notifyId, mBuilder.build());
+    }
+
 
 }

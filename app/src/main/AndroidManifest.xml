@@ -63,6 +63,11 @@
             android:name=".PreferencesActivity"
             android:label="@string/action_settings"
             android:parentActivityName=".MainActivity" />
+
+        <service
+            android:name=".PlayPauseService"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
 </manifest>
